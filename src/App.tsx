@@ -1,233 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Lenis from 'lenis';
 import './App.css';
 import { edicaoAtual } from './data/edicao-2026-08-27';
 import { useFiltros } from './hooks/useFiltros';
 import { Area, Materia } from './types';
 import { PainelLeitura } from './components/PainelLeitura';
 
-const AREAS: Area[] = [
-  'IA & Modelos',
-  'Ferramentas & Agents',
-  'Front-end',
-  'Back-end',
-  'Dados & Bancos',
-  'Infra & Segurança',
-];
-
+const AREAS: Area[] = ['IA & Modelos', 'Ferramentas & Agents', 'Front-end', 'Back-end', 'Dados & Bancos', 'Infra & Segurança'];
 const prioridadeOrdem = { essencial: 0, relevante: 1, explorar: 2 };
+
+export const AREA_LABEL: Record<Area, string> = {
+  'IA & Modelos': 'IA & Modelos',
+  'Ferramentas & Agents': 'Ferramentas & Agents',
+  'Front-end': 'Design & Front-end',
+  'Back-end': 'Back-end',
+  'Dados & Bancos': 'Dados & Bancos',
+  'Infra & Segurança': 'Infra & Segurança',
+};
+
+export const AREA_IMAGE: Record<Area, string> = {
+  'IA & Modelos': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1400&q=82',
+  'Ferramentas & Agents': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1400&q=82',
+  'Front-end': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=82',
+  'Back-end': 'https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&w=1400&q=82',
+  'Dados & Bancos': 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1400&q=82',
+  'Infra & Segurança': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=82',
+};
+
+const imagemDaMateria = (materia: Materia) => AREA_IMAGE[materia.area];
 
 function App() {
   const [areaNav, setAreaNav] = useState<Area | 'todas'>('todas');
   const [materiaAberta, setMateriaAberta] = useState<Materia | null>(null);
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
 
-  const materiasOrdenadas = [...edicaoAtual.materias].sort(
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lenis = new Lenis({ autoRaf: true, duration: 1.05, smoothWheel: true, wheelMultiplier: 0.9, syncTouch: false, touchMultiplier: 1 });
+    return () => lenis.destroy();
+  }, []);
+
+  const materiasOrdenadas = useMemo(() => [...edicaoAtual.materias].sort(
     (a, b) => prioridadeOrdem[a.prioridade] - prioridadeOrdem[b.prioridade]
-  );
-
-  const materiasComAreaNav = areaNav === 'todas'
-    ? materiasOrdenadas
-    : materiasOrdenadas.filter((m) => m.area === areaNav);
-
+  ), []);
+  const materiasComAreaNav = areaNav === 'todas' ? materiasOrdenadas : materiasOrdenadas.filter((materia) => materia.area === areaNav);
   const { filtros, materiasFiltradas, atualizarFiltro, limparFiltros } = useFiltros(materiasComAreaNav);
+  const manchete = materiasFiltradas.find((materia) => materia.prioridade === 'essencial') || materiasFiltradas[0];
+  const demais = manchete ? materiasFiltradas.filter((materia) => materia.id !== manchete.id) : [];
+  const leiturasEssenciais = demais.slice(0, 3);
+  const radar = demais.slice(3, 5);
+  const arquivo = demais.slice(5);
+  const fontesUnicas = Array.from(new Set(edicaoAtual.materias.map((materia) => materia.fonte))).sort();
+  const secoes = AREAS.map((area) => ({ area, materias: arquivo.filter((materia) => materia.area === area) })).filter((secao) => secao.materias.length > 0);
+  const temFiltroAtivo = filtros.interesse !== 'todos' || filtros.prioridade !== 'todas' || filtros.tipo !== 'todos' || filtros.fonte !== '' || filtros.busca !== '';
+  const abrir = (materia: Materia) => setMateriaAberta(materia);
 
-  const manchete = materiasFiltradas.find((m) => m.prioridade === 'essencial');
-  const demais = manchete ? materiasFiltradas.filter((m) => m.id !== manchete.id) : materiasFiltradas;
+  return <div className="app">
+    <header className="masthead" aria-label="Cabeçalho do Attlas">
+      <div className="edition-row page-width"><p>{edicaoAtual.dataEdicao} <span>·</span> Edição semanal</p><label className="search"><span className="sr-only">Buscar matérias</span><input type="search" placeholder="Buscar no boletim" value={filtros.busca} onChange={(event) => atualizarFiltro('busca', event.target.value)} /></label></div>
+      <div className="name-row page-width"><div className="issue-mark">AT</div><div><p className="eyebrow">Curadoria para produto e engenharia</p><h1>Attlas</h1></div><p className="updated">Atualizado em<br /><strong>{edicaoAtual.ultimaAtualizacao}</strong></p></div>
+      <nav className="section-nav page-width" aria-label="Seções do boletim"><button className={areaNav === 'todas' ? 'active' : ''} onClick={() => setAreaNav('todas')}>Ver tudo</button>{AREAS.map((area) => <button key={area} className={areaNav === area ? 'active' : ''} onClick={() => setAreaNav(area)}>{AREA_LABEL[area]}</button>)}</nav>
+    </header>
 
-  const fontesUnicas = Array.from(new Set(edicaoAtual.materias.map((m) => m.fonte))).sort();
+    <section className="filter-row page-width" aria-label="Filtros de leitura"><p><span>Leitura da semana</span> <b>{materiasFiltradas.length}</b> matérias</p><button className="filters-toggle" onClick={() => setFiltrosAbertos((aberto) => !aberto)}>{filtrosAbertos ? 'Ocultar filtros' : 'Filtrar matérias'}</button><div className={`filter-controls ${filtrosAbertos ? 'open' : ''}`}><Filter label="Para quem" value={filtros.interesse} onChange={(value) => atualizarFiltro('interesse', value as any)} options={[['todos','Todos'],['front-end','Design & Front-end'],['back-end','Back-end'],['ambos','Ambos']]} /><Filter label="Prioridade" value={filtros.prioridade} onChange={(value) => atualizarFiltro('prioridade', value as any)} options={[['todas','Todas'],['essencial','Essencial'],['relevante','Relevante'],['explorar','Explorar']]} /><Filter label="Formato" value={filtros.tipo} onChange={(value) => atualizarFiltro('tipo', value as any)} options={[['todos','Todos'],['notícia','Notícia'],['lançamento','Lançamento'],['changelog','Changelog'],['artigo técnico','Artigo técnico'],['pesquisa','Pesquisa'],['tutorial','Tutorial'],['case','Case'],['análise','Análise']]} /><Filter label="Fonte" value={filtros.fonte} onChange={(value) => atualizarFiltro('fonte', value)} options={[['','Todas'], ...fontesUnicas.map((fonte) => [fonte, fonte])]} />{temFiltroAtivo && <button className="clear-filters" onClick={limparFiltros}>Limpar</button>}</div></section>
 
-  const temFiltroAtivo =
-    filtros.interesse !== 'todos' ||
-    filtros.prioridade !== 'todas' ||
-    filtros.tipo !== 'todos' ||
-    filtros.fonte !== '' ||
-    filtros.busca !== '';
+    {edicaoAtual.fontesIndisponiveis.length > 0 && <details className="source-status page-width"><summary>Transparência da apuração: {edicaoAtual.fontesIndisponiveis.length} fontes indisponíveis</summary><ul>{edicaoAtual.fontesIndisponiveis.map((fonte) => <li key={fonte}>{fonte}</li>)}</ul></details>}
 
-  return (
-    <div className="app">
-      <header className="header">
-        <div className="header-meta">
-          <span>
-            Edição {edicaoAtual.dataEdicao} &middot; Atualizado {edicaoAtual.ultimaAtualizacao}
-          </span>
-          <div className="header-busca">
-            <input
-              type="text"
-              placeholder="Buscar matérias..."
-              value={filtros.busca}
-              onChange={(e) => atualizarFiltro('busca', e.target.value)}
-            />
-          </div>
-        </div>
+    <main>{manchete ? <><article className="lead-story page-width"><button className="lead-image" onClick={() => abrir(manchete)} aria-label={`Ler ${manchete.tituloPt}`}><img src={imagemDaMateria(manchete)} alt="Imagem de apoio da manchete" /></button><div className="lead-copy"><StoryMeta materia={manchete} /><h2><button onClick={() => abrir(manchete)}>{manchete.tituloPt}</button></h2><p>{manchete.resumoCurto}</p><button className="read-link" onClick={() => abrir(manchete)}>Ler matéria <span>↗</span></button></div></article>
+      {leiturasEssenciais.length > 0 && <section className="briefing-section page-width"><SectionHeading index="01" title="Leituras essenciais" action="Seleção da semana" /><div className="brief-grid">{leiturasEssenciais.map((materia) => <BriefStory key={materia.id} materia={materia} onOpen={() => abrir(materia)} />)}</div></section>}
+      {radar.length > 0 && <section className="visual-section page-width"><SectionHeading index="02" title="Radar de produto e engenharia" action="Análises e contexto" /><div className="visual-editorial">{radar.map((materia, index) => <VisualStory key={materia.id} materia={materia} featured={index === 0} onOpen={() => abrir(materia)} />)}</div></section>}
+      {secoes.map((secao, index) => <TopicSection key={secao.area} index={String(index + 3).padStart(2, '0')} area={secao.area} materias={secao.materias} onOpen={abrir} />)}</> : <section className="empty page-width"><p>Nenhuma matéria combina com estes filtros.</p><button onClick={() => { limparFiltros(); setAreaNav('todas'); }}>Limpar filtros</button></section>}</main>
 
-        <div className="header-titulo">
-          <h1>Boletim Tech</h1>
-          <p className="subtitulo">Curadoria semanal de IA, ferramentas e engenharia para os sócios</p>
-        </div>
+    <footer className="footer page-width"><p>Attlas <span>—</span> curadoria semanal para dois sócios.</p><p>Fontes oficiais, documentação e contexto editorial.</p></footer>
+    {materiaAberta && <PainelLeitura materia={materiaAberta} imagem={imagemDaMateria(materiaAberta)} areaLabel={AREA_LABEL[materiaAberta.area]} onFechar={() => setMateriaAberta(null)} />}
+  </div>;
+}
 
-        <nav className="header-nav">
-          <button
-            className={areaNav === 'todas' ? 'ativo' : ''}
-            onClick={() => setAreaNav('todas')}
-          >
-            Ver tudo
-          </button>
-          {AREAS.map((area) => (
-            <button
-              key={area}
-              className={areaNav === area ? 'ativo' : ''}
-              onClick={() => setAreaNav(area)}
-            >
-              {area}
-            </button>
-          ))}
-        </nav>
-      </header>
+function Filter({ label, value, onChange, options }: { label: string; value: string; onChange: (value: string) => void; options: string[][] }) { return <label className="select-label"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{options.map(([optionValue, optionLabel]) => <option key={optionValue} value={optionValue}>{optionLabel}</option>)}</select></label>; }
+function StoryMeta({ materia }: { materia: Materia }) { return <p className="story-meta"><span>{materia.prioridade}</span><span>{AREA_LABEL[materia.area]}</span><span>{materia.fonte}</span><time>{materia.data}</time></p>; }
+function SectionHeading({ index, title, action }: { index: string; title: string; action: string }) { return <header className="section-heading"><p><span>{index}</span>{title}</p><span>{action}</span></header>; }
+function BriefStory({ materia, onOpen }: { materia: Materia; onOpen: () => void }) { return <article className="brief-story"><button className="brief-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagemDaMateria(materia)} alt="" /></button><div className="brief-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><button className="brief-arrow" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></div></article>; }
+function VisualStory({ materia, featured, onOpen }: { materia: Materia; featured: boolean; onOpen: () => void }) { return <article className={`visual-story ${featured ? 'visual-featured' : ''}`}><button className="visual-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagemDaMateria(materia)} alt="" /></button><div className="visual-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Ler análise <span>↗</span></button></div></article>; }
 
-      <button
-        className="filtros-toggle"
-        onClick={() => setFiltrosAbertos(!filtrosAbertos)}
-      >
-        {filtrosAbertos ? 'Ocultar filtros' : 'Mostrar filtros'}
-      </button>
-
-      <div className={`filtros-bar${filtrosAbertos ? ' aberto' : ''}`}>
-        <select
-          value={filtros.interesse}
-          onChange={(e) => atualizarFiltro('interesse', e.target.value as any)}
-        >
-          <option value="todos">Interesse: todos</option>
-          <option value="front-end">Front-end</option>
-          <option value="back-end">Back-end</option>
-          <option value="ambos">Ambos</option>
-        </select>
-
-        <select
-          value={filtros.prioridade}
-          onChange={(e) => atualizarFiltro('prioridade', e.target.value as any)}
-        >
-          <option value="todas">Prioridade: todas</option>
-          <option value="essencial">Essencial</option>
-          <option value="relevante">Relevante</option>
-          <option value="explorar">Explorar</option>
-        </select>
-
-        <select
-          value={filtros.tipo}
-          onChange={(e) => atualizarFiltro('tipo', e.target.value as any)}
-        >
-          <option value="todos">Tipo: todos</option>
-          <option value="notícia">Notícia</option>
-          <option value="lançamento">Lançamento</option>
-          <option value="changelog">Changelog</option>
-          <option value="artigo técnico">Artigo técnico</option>
-          <option value="pesquisa">Pesquisa</option>
-          <option value="tutorial">Tutorial</option>
-          <option value="case">Case</option>
-          <option value="análise">Análise</option>
-        </select>
-
-        <select
-          value={filtros.fonte}
-          onChange={(e) => atualizarFiltro('fonte', e.target.value)}
-        >
-          <option value="">Fonte: todas</option>
-          {fontesUnicas.map((f) => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-
-        {temFiltroAtivo && (
-          <button className="limpar-btn" onClick={limparFiltros}>
-            Limpar filtros
-          </button>
-        )}
-      </div>
-
-      {edicaoAtual.fontesIndisponiveis.length > 0 && (
-        <div className="conteudo">
-          <div className="aviso-fontes">
-            <strong>Fontes indisponíveis nesta edição:</strong>
-            {edicaoAtual.fontesIndisponiveis.join(' · ')}
-          </div>
-        </div>
-      )}
-
-      <main className="conteudo">
-        <p className="contagem">
-          {materiasFiltradas.length} matéria{materiasFiltradas.length !== 1 ? 's' : ''}
-          {temFiltroAtivo || areaNav !== 'todas' ? ' (filtradas)' : ''}
-        </p>
-
-        {manchete && (
-          <article className="manchete" onClick={() => setMateriaAberta(manchete)}>
-            <div className="manchete-inner">
-              <span className="manchete-badge">Essencial</span>
-              <h2>{manchete.tituloPt}</h2>
-              <p className="manchete-resumo">{manchete.resumoCurto}</p>
-              <div className="manchete-meta">
-                <span>{manchete.fonte}</span>
-                <span>{manchete.data}</span>
-                <span>{manchete.area}</span>
-              </div>
-            </div>
-          </article>
-        )}
-
-        {demais.length > 0 ? (
-          <div className="cards-grid">
-            {demais.map((materia) => (
-              <article
-                key={materia.id}
-                className="card"
-                onClick={() => setMateriaAberta(materia)}
-              >
-                <div className={`card-prioridade ${materia.prioridade}`} />
-                <p className="card-area">{materia.area}</p>
-                <h3>{materia.tituloPt}</h3>
-                <p className="card-resumo">{materia.resumoCurto}</p>
-                <div className="card-footer">
-                  <div className="card-tags">
-                    <span className="tag">{materia.tipo}</span>
-                    <span className="tag">{materia.interesse}</span>
-                  </div>
-                  <span>{materia.data}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          !manchete && (
-            <div className="sem-resultados">
-              <h3>Nenhuma matéria encontrada</h3>
-              <p>Tente ajustar os filtros ou a busca.</p>
-            </div>
-          )
-        )}
-      </main>
-
-      <footer className="footer">
-        <div className="footer-fontes">
-          <h4>Fontes desta edição</h4>
-          <ul>
-            {fontesUnicas.map((f) => (
-              <li key={f}>{f}</li>
-            ))}
-          </ul>
-        </div>
-        <p style={{ marginTop: '16px' }}>
-          Boletim Tech &middot; Portal editorial privado &middot; {edicaoAtual.dataEdicao}
-        </p>
-      </footer>
-
-      {materiaAberta && (
-        <PainelLeitura
-          materia={materiaAberta}
-          onFechar={() => setMateriaAberta(null)}
-        />
-      )}
-    </div>
-  );
+function TopicSection({ index, area, materias, onOpen }: { index: string; area: Area; materias: Materia[]; onOpen: (materia: Materia) => void }) {
+  const [principal, ...lista] = materias;
+  return <section className="topic-section page-width"><SectionHeading index={index} title={AREA_LABEL[area]} action={`${materias.length} ${materias.length === 1 ? 'matéria' : 'matérias'}`} /><div className="topic-layout"><article className="topic-feature"><button className="topic-image" onClick={() => onOpen(principal)}><img src={imagemDaMateria(principal)} alt="" /></button><div><StoryMeta materia={principal} /><h3><button onClick={() => onOpen(principal)}>{principal.tituloPt}</button></h3><p>{principal.resumoCurto}</p><button className="read-link" onClick={() => onOpen(principal)}>Entender a notícia <span>↗</span></button></div></article>{lista.length > 0 && <div className="topic-list">{lista.map((materia) => <article key={materia.id}><StoryMeta materia={materia} /><h4><button onClick={() => onOpen(materia)}>{materia.tituloPt}</button></h4><button className="row-arrow" onClick={() => onOpen(materia)} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></article>)}</div>}</div></section>;
 }
 
 export default App;
