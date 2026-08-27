@@ -37,6 +37,7 @@ export interface Materia {
   tags: string[];
   /** Imagem editorial aprovada para esta matéria. Ausente = apresentação textual. */
   imagem?: string;
+  orientacaoImagem?: 'horizontal' | 'vertical' | 'quadrada';
 }
 
 export interface Edicao {

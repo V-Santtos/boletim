@@ -75,7 +75,10 @@ Evite textos genéricos. Dê consequências, decisões e limitações concretas 
 - Cabeçalho em três faixas: data e busca; masthead; navegação por áreas.
 - Manchete principal usa fotografia horizontal com sobreposição de texto e contraste.
 - A página alterna ritmos: manchete, leituras rápidas, mosaicos e listas editoriais. Não transformar todas as notícias em cards idênticos.
-- Imagens de matérias devem ser relevantes e consistentes. Quando não houver imagem permitida, usar tratamento neutro; nunca simular uma fonte ou autor inexistente.
+- Use somente uma imagem realmente associada à publicação (por exemplo, `og:image` da fonte) e confirme que o arquivo abre antes de incluí-lo. Não invente foto de apoio.
+- Registre a orientação da imagem como `horizontal`, `vertical` ou `quadrada`. O layout deve escolher o módulo pela proporção capturada: banner ou bloco largo para horizontal; módulo alto para vertical; módulo compacto para quadrada.
+- Se a matéria não tiver imagem válida, apresente-a como uma linha editorial com metadados, título e acesso à leitura — nunca dentro de um card com espaço de foto vazio.
+- Não reutilize a mesma imagem em matérias diferentes. Quando várias notícias apontarem para uma página de changelog com a mesma arte genérica, apenas uma poderá usar essa arte; as demais entram como linhas.
 - Título completo fica na matéria. A capa pode usar título editorial curto, com limite de linhas apropriado ao módulo.
 
 ## Manutenção da memória

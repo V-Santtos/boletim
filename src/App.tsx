@@ -19,6 +19,8 @@ export const AREA_LABEL: Record<Area, string> = {
 };
 
 const imagemDaMateria = (materia: Materia) => materia.imagem;
+const temImagem = (materia: Materia) => Boolean(imagemDaMateria(materia));
+const orientacaoDaImagem = (materia: Materia) => materia.orientacaoImagem ?? 'horizontal';
 
 function App() {
   const [areaNav, setAreaNav] = useState<Area | 'todas'>('todas');
@@ -36,11 +38,15 @@ function App() {
   ), []);
   const materiasComAreaNav = areaNav === 'todas' ? materiasOrdenadas : materiasOrdenadas.filter((materia) => materia.area === areaNav);
   const { filtros, materiasFiltradas, atualizarFiltro, limparFiltros } = useFiltros(materiasComAreaNav);
-  const manchete = materiasFiltradas.find((materia) => materia.prioridade === 'essencial') || materiasFiltradas[0];
+  const manchete = materiasFiltradas.find((materia) => materia.prioridade === 'essencial' && temImagem(materia) && orientacaoDaImagem(materia) === 'horizontal')
+    || materiasFiltradas.find((materia) => materia.prioridade === 'essencial')
+    || materiasFiltradas[0];
   const demais = manchete ? materiasFiltradas.filter((materia) => materia.id !== manchete.id) : [];
-  const leiturasEssenciais = demais.slice(0, 3);
-  const radar = demais.filter((materia) => Boolean(imagemDaMateria(materia))).slice(0, 2);
-  const arquivo = demais.filter((materia) => !radar.some((item) => item.id === materia.id));
+  const materiasVisuais = demais.filter(temImagem);
+  const leiturasEssenciais = materiasVisuais.slice(0, 3);
+  const radar = materiasVisuais.slice(3, 5);
+  const destaquesUsados = new Set([...leiturasEssenciais, ...radar].map((materia) => materia.id));
+  const arquivo = demais.filter((materia) => !destaquesUsados.has(materia.id));
   const fontesUnicas = Array.from(new Set(edicaoAtual.materias.map((materia) => materia.fonte))).sort();
   const secoes = AREAS.map((area) => ({ area, materias: arquivo.filter((materia) => materia.area === area) })).filter((secao) => secao.materias.length > 0);
   const temFiltroAtivo = filtros.interesse !== 'todos' || filtros.prioridade !== 'todas' || filtros.tipo !== 'todos' || filtros.fonte !== '' || filtros.busca !== '';
@@ -70,13 +76,23 @@ function App() {
 function Filter({ label, value, onChange, options }: { label: string; value: string; onChange: (value: string) => void; options: string[][] }) { return <label className="select-label"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{options.map(([optionValue, optionLabel]) => <option key={optionValue} value={optionValue}>{optionLabel}</option>)}</select></label>; }
 function StoryMeta({ materia }: { materia: Materia }) { return <p className="story-meta"><span>{materia.prioridade}</span><span>{AREA_LABEL[materia.area]}</span><span>{materia.fonte}</span><time>{materia.data}</time></p>; }
 function SectionHeading({ index, title, action }: { index: string; title: string; action: string }) { return <header className="section-heading"><p><span>{index}</span>{title}</p><span>{action}</span></header>; }
-function BriefStory({ materia, onOpen }: { materia: Materia; onOpen: () => void }) { const imagem = imagemDaMateria(materia); return <article className={`brief-story ${imagem ? '' : 'brief-story--text'}`}>{imagem && <button className="brief-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagem} alt="" /></button>}<div className="brief-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><button className="brief-arrow" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></div></article>; }
-function VisualStory({ materia, featured, onOpen }: { materia: Materia; featured: boolean; onOpen: () => void }) { const imagem = imagemDaMateria(materia); if (!imagem) return <BriefStory materia={materia} onOpen={onOpen} />; return <article className={`visual-story ${featured ? 'visual-featured' : ''}`}><button className="visual-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagem} alt="" /></button><div className="visual-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Ler análise <span>↗</span></button></div></article>; }
+function BriefStory({ materia, onOpen }: { materia: Materia; onOpen: () => void }) { const imagem = imagemDaMateria(materia); return <article className="brief-story">{imagem && <button className={`brief-image image-${orientacaoDaImagem(materia)}`} onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagem} alt="" /></button>}<div className="brief-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><button className="brief-arrow" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></div></article>; }
+function VisualStory({ materia, featured, onOpen }: { materia: Materia; featured: boolean; onOpen: () => void }) { const imagem = imagemDaMateria(materia); if (!imagem) return null; return <article className={`visual-story ${featured ? 'visual-featured' : ''} image-${orientacaoDaImagem(materia)}`}><button className="visual-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagem} alt="" /></button><div className="visual-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Ler análise <span>↗</span></button></div></article>; }
 
 function TopicSection({ index, area, materias, onOpen }: { index: string; area: Area; materias: Materia[]; onOpen: (materia: Materia) => void }) {
-  const [principal, ...lista] = materias;
-  const imagem = imagemDaMateria(principal);
-  return <section className="topic-section page-width"><SectionHeading index={index} title={AREA_LABEL[area]} action={`${materias.length} ${materias.length === 1 ? 'matéria' : 'matérias'}`} /><div className={`topic-layout ${imagem ? '' : 'topic-layout--text'}`}><article className="topic-feature">{imagem && <button className="topic-image" onClick={() => onOpen(principal)}><img src={imagem} alt="" /></button>}<div><StoryMeta materia={principal} /><h3><button onClick={() => onOpen(principal)}>{principal.tituloPt}</button></h3><p>{principal.resumoCurto}</p><button className="read-link" onClick={() => onOpen(principal)}>Entender a notícia <span>↗</span></button></div></article>{lista.length > 0 && <div className="topic-list">{lista.map((materia) => <article key={materia.id}><StoryMeta materia={materia} /><h4><button onClick={() => onOpen(materia)}>{materia.tituloPt}</button></h4><button className="row-arrow" onClick={() => onOpen(materia)} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></article>)}</div>}</div></section>;
+  const visuais = materias.filter(temImagem);
+  const linhas = materias.filter((materia) => !temImagem(materia));
+  return <section className="topic-section page-width"><SectionHeading index={index} title={AREA_LABEL[area]} action={`${materias.length} ${materias.length === 1 ? 'matéria' : 'matérias'}`} /><div className={`topic-composition ${visuais.length === 0 ? 'only-lines' : ''} ${linhas.length === 0 ? 'only-visuals' : ''}`}>{visuais.length > 0 && <div className="story-mosaic">{visuais.map((materia, mosaicIndex) => <MosaicStory key={materia.id} materia={materia} destaque={mosaicIndex === 0} onOpen={() => onOpen(materia)} />)}</div>}{linhas.length > 0 && <div className="topic-list">{linhas.map((materia) => <TopicLine key={materia.id} materia={materia} onOpen={() => onOpen(materia)} />)}</div>}</div></section>;
+}
+
+function MosaicStory({ materia, destaque, onOpen }: { materia: Materia; destaque: boolean; onOpen: () => void }) {
+  const imagem = imagemDaMateria(materia);
+  const orientacao = orientacaoDaImagem(materia);
+  return <article className={`mosaic-story mosaic-story--${orientacao} ${destaque ? 'mosaic-story--featured' : ''}`}><button className="mosaic-image" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagem} alt="" /></button><div className="mosaic-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Entender a notícia <span>↗</span></button></div></article>;
+}
+
+function TopicLine({ materia, onOpen }: { materia: Materia; onOpen: () => void }) {
+  return <article><StoryMeta materia={materia} /><h4><button onClick={onOpen}>{materia.tituloPt}</button></h4><button className="row-arrow" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></article>;
 }
 
 export default App;
