@@ -35,6 +35,8 @@ export interface Materia {
   prioridade: Prioridade;
   tipo: TipoConteudo;
   tags: string[];
+  /** Imagem editorial aprovada para esta matéria. Ausente = apresentação textual. */
+  imagem?: string;
 }
 
 export interface Edicao {
