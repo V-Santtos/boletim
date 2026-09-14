@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Lenis from 'lenis';
 import './App.css';
-import { edicaoAtual } from './data/edicao-2026-08-27';
+import { edicaoAtual as edicaoAgosto } from './data/edicao-2026-08-27';
+import { edicao20260914 } from './data/edicao-2026-09-14';
 import { useFiltros } from './hooks/useFiltros';
-import { Area, Materia } from './types';
+import { Area, Edicao, Materia } from './types';
 import { PainelLeitura } from './components/PainelLeitura';
+
+const edicoes: Edicao[] = [edicao20260914, edicaoAgosto];
+const edicaoAtual = edicoes[0];
 
 const AREAS: Area[] = ['IA & Modelos', 'Ferramentas & Agents', 'Front-end', 'Back-end', 'Dados & Bancos', 'Infra & Segurança'];
 const prioridadeOrdem = { essencial: 0, relevante: 1, explorar: 2 };
