@@ -5,6 +5,7 @@ import { edicoes, edicaoMaisRecente } from './data/edicoes';
 import { useFiltros } from './hooks/useFiltros';
 import { Area, Edicao, Materia } from './types';
 import { PainelLeitura } from './components/PainelLeitura';
+import { BandaComposta, ColunaComposta, EntradaDeBanda, ItemComposto, compor } from './lib/composicao';
 
 const AREAS: Area[] = ['IA & Modelos', 'Ferramentas & Agents', 'Front-end', 'Back-end', 'Dados & Bancos', 'Infra & Segurança'];
 const prioridadeOrdem = { essencial: 0, relevante: 1, explorar: 2 };
@@ -86,21 +87,44 @@ function App() {
   const abrir = (materia: Materia) => setMateriaAberta(materia);
 
   const daSemana = materiasFiltradas.filter((materia) => dentroDaJanela(materia, edicaoAtual));
-  const contexto = materiasFiltradas.filter((materia) => !dentroDaJanela(materia, edicaoAtual));
 
   // A manchete é a essencial mais recente da janela — com foto quando houver, mas nunca dependendo disso.
   const candidatas = daSemana.length > 0 ? daSemana : materiasFiltradas;
   const essenciais = candidatas.filter((materia) => materia.prioridade === 'essencial');
   const manchete = essenciais.find((materia) => temImagem(materia) && orientacaoDaImagem(materia) === 'horizontal') || essenciais[0] || candidatas[0];
 
-  const demais = manchete ? candidatas.filter((materia) => materia.id !== manchete.id) : [];
-  // Destaque só leva matéria com foto: card sem imagem no topo da página abre buraco.
-  // Com menos de três candidatas o bloco inteiro some, em vez de ficar meio vazio.
-  const comFoto = demais.filter(temImagem);
-  const destaques = comFoto.length >= 3 ? comFoto.slice(0, 3) : [];
-  const usadas = new Set(destaques.map((materia) => materia.id));
-  const restantes = demais.filter((materia) => !usadas.has(materia.id));
-  const secoes = AREAS.map((area) => ({ area, materias: restantes.filter((materia) => materia.area === area) })).filter((secao) => secao.materias.length > 0);
+
+  /**
+   * As bandas saem da PRIORIDADE, não da área. Agrupar por área produzia banda de uma
+   * matéria só — e com uma matéria não existe composição: sobra uma tira da largura
+   * inteira. Misturar áreas na mesma banda é o que o jornal faz, e a área não se perde:
+   * ela continua etiquetada em cada item e o menu do cabeçalho segue filtrando por ela.
+   *
+   * Quando o leitor filtra por área, aí sim a banda vira aquela área — porque nesse
+   * momento a página inteira já é sobre ela.
+   */
+  const bandas = useMemo(() => {
+    const demais = manchete ? candidatas.filter((materia) => materia.id !== manchete.id) : [];
+    const naJanela = demais.filter((materia) => dentroDaJanela(materia, edicaoAtual));
+    const contextoRestante = demais.filter((materia) => !dentroDaJanela(materia, edicaoAtual));
+
+    const grupos: EntradaDeBanda[] = [];
+    const faixas: [string, string, string][] = [
+      ['essencial', 'Leituras essenciais', 'Muda decisão nesta semana'],
+      ['relevante', 'Também nesta edição', 'Vale a leitura da semana'],
+      ['explorar', 'Sinais para acompanhar', 'Contexto e ideia em formação'],
+    ];
+    faixas.forEach(([prioridade, titulo, acao]) => {
+      const daFaixa = naJanela.filter((materia) => materia.prioridade === prioridade);
+      if (daFaixa.length > 0) grupos.push({ id: prioridade, titulo, indice: '', acao, materias: daFaixa });
+    });
+    if (contextoRestante.length > 0) {
+      grupos.push({ id: 'contexto', titulo: 'Contexto', indice: '', acao: 'Anterior à janela desta edição', materias: porData(contextoRestante) });
+    }
+    grupos.forEach((grupo, i) => { grupo.indice = String(i + 1).padStart(2, '0'); });
+
+    return compor(manchete ?? null, grupos);
+  }, [candidatas, manchete, edicaoAtual]);
 
   const trocarVista = (proxima: 'edicao' | 'arquivo') => { setVista(proxima); setAreaNav('todas'); setMateriaAberta(null); };
 
@@ -145,20 +169,7 @@ function App() {
 
       {vista === 'arquivo' && materiasFiltradas.length > 0 && <ArquivoLista materias={materiasFiltradas as MateriaArquivada[]} onOpen={abrir} />}
 
-      {vista === 'edicao' && manchete && <>
-        <article className={`ed-manchete page-width ${temImagem(manchete) ? '' : 'sem-foto'}`}>
-          {temImagem(manchete) && <button className="ed-manchete-foto" onClick={() => abrir(manchete)} aria-label={`Ler ${manchete.tituloPt}`}><img src={imagemDaMateria(manchete)} alt="" /></button>}
-          <div className="ed-manchete-texto"><StoryMeta materia={manchete} /><h2><button onClick={() => abrir(manchete)}>{manchete.tituloPt}</button></h2><p>{manchete.resumoCurto}</p><button className="read-link" onClick={() => abrir(manchete)}>Ler matéria <span>↗</span></button></div>
-        </article>
-
-        {destaques.length > 0 && <section className="ed-secao page-width"><SectionHeading index="01" title="Leituras essenciais" action="Seleção da semana" />
-          <div className="ed-cards">{destaques.map((materia) => <Card key={materia.id} materia={materia} onOpen={() => abrir(materia)} />)}</div></section>}
-
-        {secoes.map((secao, index) => <AreaSection key={secao.area} index={String(index + 2).padStart(2, '0')} area={secao.area} materias={secao.materias} onOpen={abrir} />)}
-
-        {contexto.length > 0 && <section className="ed-secao page-width"><SectionHeading index={String(secoes.length + 2).padStart(2, '0')} title="Contexto" action="Anterior à janela desta edição" />
-          <div className="ed-linhas">{porData(contexto).map((materia) => <Linha key={materia.id} materia={materia} onOpen={() => abrir(materia)} />)}</div></section>}
-      </>}
+      {vista === 'edicao' && manchete && bandas.map((banda) => <Banda key={banda.id} banda={banda} onOpen={abrir} />)}
     </main>
 
     <footer className="footer page-width"><p>Attlas <span>—</span> curadoria semanal para dois sócios.</p><p>Fontes oficiais, documentação e contexto editorial.</p></footer>
@@ -173,49 +184,93 @@ function StoryMeta({ materia }: { materia: Materia }) { return <p className="sto
 function SectionHeading({ index, title, action }: { index: string; title: string; action: string }) { return <header className="section-heading"><p><span>{index}</span>{title}</p><span>{action}</span></header>; }
 
 /**
- * Card é o único formato visual de matéria com foto. Proporção fixa em 16/9,
- * recorte por cobertura e altura uniforme: é o que impede a imagem de esticar
- * e abrir buraco quando a área tem poucas matérias.
+ * Uma banda ocupa a largura inteira e se divide em colunas de larguras diferentes.
+ * Cada coluna empilha seus itens; o fio vertical entre elas corre a banda toda, então
+ * coluna que termina antes da vizinha lê como composição, não como buraco.
  */
-function Card({ materia, onOpen }: { materia: Materia; onOpen: () => void }) {
-  return <article className="ed-card">
-    <button className="ed-card-foto" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagemDaMateria(materia)} alt="" loading="lazy" /></button>
-    <div className="ed-card-texto">
+function Banda({ banda, onOpen }: { banda: BandaComposta; onOpen: (materia: Materia) => void }) {
+  if (banda.tipo === 'capa') {
+    return <Capa materia={banda.colunas[0].itens[0].materia} onOpen={() => onOpen(banda.colunas[0].itens[0].materia)} />;
+  }
+  return <section className="ed-banda page-width">
+    <SectionHeading index={banda.indice ?? ''} title={banda.titulo ?? ''} action={banda.acao ?? ''} />
+    <div className="ed-colunas">
+      {banda.colunas.map((coluna, i) => <Coluna key={i} coluna={coluna} onOpen={onOpen} />)}
+    </div>
+  </section>;
+}
+
+function Coluna({ coluna, onOpen }: { coluna: ColunaComposta; onOpen: (materia: Materia) => void }) {
+  return <div className="ed-coluna" data-span={coluna.span} style={{ flexGrow: coluna.span, flexBasis: 0 }}>
+    {coluna.itens.map((item) => <Item key={item.materia.id} item={item} onOpen={() => onOpen(item.materia)} />)}
+  </div>;
+}
+
+function Item({ item, onOpen }: { item: ItemComposto; onOpen: () => void }) {
+  const { materia, formato } = item;
+  const Foto = ({ classe }: { classe: string }) => <button className={classe} onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}>
+    <img src={imagemDaMateria(materia)} alt="" loading="lazy" />
+  </button>;
+
+  if (formato === 'dominante') {
+    // Texto primeiro, foto depois: é o que tira a matéria da silhueta de card.
+    return <article className="ed-item ed-dominante">
+      <StoryMeta materia={materia} />
+      <h3><button onClick={onOpen}>{materia.tituloPt}</button></h3>
+      <p>{materia.resumoCurto}</p>
+      {temImagem(materia) && <Foto classe="ed-foto-larga" />}
+      <button className="read-link" onClick={onOpen}>Entender a notícia <span>↗</span></button>
+    </article>;
+  }
+
+  if (formato === 'retrato') {
+    return <article className="ed-item ed-retrato">
+      <Foto classe="ed-foto-alta" />
+      <StoryMeta materia={materia} />
+      <h3><button onClick={onOpen}>{materia.tituloPt}</button></h3>
+      <button className="read-link" onClick={onOpen}>Entender a notícia <span>↗</span></button>
+    </article>;
+  }
+
+  if (formato === 'compacto') {
+    return <article className="ed-item ed-compacto">
+      <Foto classe="ed-foto-quadro" />
+      <div>
+        <StoryMeta materia={materia} />
+        <h4><button onClick={onOpen}>{materia.tituloPt}</button></h4>
+      </div>
+    </article>;
+  }
+
+  if (formato === 'nota') {
+    // Sem foto vira peso tipográfico, não espaço vazio esperando imagem.
+    return <article className="ed-item ed-nota">
       <StoryMeta materia={materia} />
       <h3><button onClick={onOpen}>{materia.tituloPt}</button></h3>
       <p>{materia.resumoCurto}</p>
       <button className="read-link" onClick={onOpen}>Entender a notícia <span>↗</span></button>
-    </div>
-  </article>;
-}
+    </article>;
+  }
 
-/** Matéria sem foto vira linha. Nunca um card com espaço de imagem vazio. */
-function Linha({ materia, onOpen }: { materia: Materia; onOpen: () => void }) {
-  return <article className="ed-linha">
+  return <article className="ed-item ed-linha">
     <StoryMeta materia={materia} />
     <h4><button onClick={onOpen}>{materia.tituloPt}</button></h4>
-    <p>{materia.resumoCurto}</p>
     <button className="ed-linha-seta" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button>
   </article>;
 }
 
-/**
- * Cada área divide as matérias pelo que elas têm: com foto vai para a grade de
- * cards à esquerda, sem foto vai para a coluna de linhas à direita. Quando falta
- * um dos dois lados, a seção passa a uma coluna só — em vez de deixar metade da
- * largura vazia, que era o buraco que aparecia nas áreas com uma matéria.
- */
-function AreaSection({ index, area, materias, onOpen }: { index: string; area: Area; materias: Materia[]; onOpen: (materia: Materia) => void }) {
-  const cards = materias.filter(temImagem);
-  const linhas = materias.filter((materia) => !temImagem(materia));
-  const coluna = cards.length === 0 ? 'so-linhas' : linhas.length === 0 ? 'so-cards' : '';
-  return <section className="ed-secao page-width">
-    <SectionHeading index={index} title={AREA_LABEL[area]} action={`${materias.length} ${materias.length === 1 ? 'matéria' : 'matérias'}`} />
-    <div className={`ed-corpo ${coluna}`}>
-      {cards.length > 0 && <div className="ed-cards">{cards.map((materia) => <Card key={materia.id} materia={materia} onOpen={() => onOpen(materia)} />)}</div>}
-      {linhas.length > 0 && <div className="ed-linhas">{linhas.map((materia) => <Linha key={materia.id} materia={materia} onOpen={() => onOpen(materia)} />)}</div>}
+function Capa({ materia, onOpen }: { materia: Materia; onOpen: () => void }) {
+  return <article className={`ed-capa page-width ${temImagem(materia) ? '' : 'sem-foto'}`}>
+    {temImagem(materia) && <button className="ed-capa-foto" onClick={onOpen} aria-label={`Ler ${materia.tituloPt}`}><img src={imagemDaMateria(materia)} alt="" /></button>}
+    <div className="ed-capa-texto">
+      <StoryMeta materia={materia} />
+      <h2><button onClick={onOpen}>{materia.tituloPt}</button></h2>
+      <div className="ed-capa-entrada">
+        <p>{materia.resumoCurto}</p>
+        <button className="read-link" onClick={onOpen}>Ler matéria <span>↗</span></button>
+      </div>
     </div>
-  </section>;
+  </article>;
 }
 
 
@@ -229,7 +284,7 @@ function ArquivoLista({ materias, onOpen }: { materias: MateriaArquivada[]; onOp
   return <section className="archive page-width">
     {grupos.map((grupo, index) => <section key={`${grupo.edicaoId}-${index}`} className="archive-group">
       <SectionHeading index={String(index + 1).padStart(2, '0')} title={`Edição de ${grupo.edicaoLabel}`} action={`${grupo.materias.length} ${grupo.materias.length === 1 ? 'matéria' : 'matérias'}`} />
-      <div className="ed-linhas">{grupo.materias.map((materia) => <Linha key={`${grupo.edicaoId}-${materia.id}`} materia={materia} onOpen={() => onOpen(materia)} />)}</div>
+      <div className="ed-arquivo-linhas">{grupo.materias.map((materia) => <Item key={`${grupo.edicaoId}-${materia.id}`} item={{ materia, formato: 'linha' }} onOpen={() => onOpen(materia)} />)}</div>
     </section>)}
   </section>;
 }

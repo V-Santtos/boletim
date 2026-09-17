@@ -136,59 +136,103 @@ body { color:var(--ink); background:var(--paper); font-family:var(--sans); font-
 .brief-story .capa--placa.brief-image .placa-sigla { font-size:1.9rem; }
 .brief-story .capa--placa.brief-image .placa-tipo { display:block; }
 
-/* ================= Sistema de montagem da edição =================
-   Duas formas, só. Matéria com foto é card de proporção fixa; matéria sem foto
-   é linha. A seção decide as colunas pelo que tem em mãos, então nunca sobra
-   metade da largura vazia nem a imagem estica para preencher espaço. */
+/* ================= Motor de composição da edição =================
+   A página é uma sequência de BANDAS. Cada banda se divide em COLUNAS de larguras
+   diferentes, e cada coluna empilha seus itens até encher. Coluna que empilha não
+   abre buraco: ela só termina antes da vizinha, e o fio vertical entre as colunas
+   corre a banda inteira, fechando a forma.
 
-.ed-secao { margin-top:52px; }
-.ed-corpo { display:grid; grid-template-columns:minmax(0,2.15fr) minmax(0,1fr); gap:clamp(24px,3vw,44px); align-items:start; }
-.ed-corpo.so-cards,.ed-corpo.so-linhas { grid-template-columns:1fr; }
+   São seis silhuetas, e a matéria ganha a sua pela largura da coluna em que caiu:
+   capa, dominante (texto em cima, foto embaixo), retrato (foto alta), compacto
+   (foto quadrada ao lado), nota (sem foto, peso tipográfico) e linha. */
 
-/* Cards: trilha automática, então 1, 2, 5 ou 9 matérias sempre fecham a grade. */
-.ed-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(230px,21vw,290px),1fr)); gap:clamp(16px,1.6vw,24px); }
-.ed-corpo.so-cards .ed-cards { grid-template-columns:repeat(auto-fill,minmax(clamp(240px,19vw,300px),1fr)); }
+.ed-banda { margin-top:clamp(38px,4vw,60px); }
+.ed-colunas { display:flex; align-items:stretch; gap:0; padding-top:14px; }
+.ed-coluna { min-width:0; display:flex; flex-direction:column; padding:0 clamp(14px,1.7vw,26px); }
+.ed-coluna:first-child { padding-left:0; }
+.ed-coluna:last-child { padding-right:0; }
+/* O fio é o que sustenta a altura desigual: sem ele, coluna curta vira buraco. */
+.ed-coluna + .ed-coluna { border-left:1px solid var(--line); }
 
-.ed-card { display:grid; grid-template-rows:auto 1fr; min-width:0; overflow:hidden; border:1px solid #d8d1c5; border-radius:12px; background:rgba(255,255,255,.8); }
-.ed-card-foto { display:block; width:100%; aspect-ratio:16/9; padding:0; overflow:hidden; border:0; background:var(--paper-deep); }
-.ed-card-foto img { width:100%; height:100%; display:block; object-fit:cover; transition:transform .45s; }
-.ed-card-foto:hover img { transform:scale(1.03); }
-.ed-card-texto { display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding:15px 17px 17px; }
-.ed-card-texto h3 { margin:0; font:600 clamp(1.05rem,1.25vw,1.32rem)/1.14 var(--display); letter-spacing:-.035em; }
-.ed-card-texto h3 button { display:-webkit-box; overflow:hidden; padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
-.ed-card-texto>p:not(.story-meta) { display:-webkit-box; overflow:hidden; margin:0; color:#514d46; font-size:12.5px; line-height:1.5; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
-.ed-card-texto .read-link { margin-top:auto; padding-top:8px; }
+.ed-item { position:relative; display:flex; flex-direction:column; align-items:flex-start; padding-bottom:clamp(18px,2vw,26px); }
+.ed-item + .ed-item { margin-top:clamp(18px,2vw,26px); border-top:1px solid var(--line); padding-top:clamp(18px,2vw,26px); }
+.ed-item h3,.ed-item h4 { margin:0; letter-spacing:-.035em; text-wrap:balance; }
+.ed-item h3 button,.ed-item h4 button { display:-webkit-box; overflow:hidden; padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; -webkit-box-orient:vertical; }
+.ed-item>p:not(.story-meta) { display:-webkit-box; overflow:hidden; margin:8px 0 0; color:#514d46; line-height:1.55; -webkit-box-orient:vertical; }
+.ed-item .story-meta { display:flex; flex-wrap:wrap; gap:3px 10px; margin-bottom:7px; }
+.ed-item .story-meta time { margin-left:0; }
+.ed-item .read-link { margin-top:auto; }
 
-/* Linhas: a coluna da direita, onde entra tudo que não tem foto decente. */
-.ed-linhas { display:flex; flex-direction:column; border-top:2px solid var(--ink); }
-.ed-corpo.so-linhas .ed-linhas { border-top:2px solid var(--ink); }
-.ed-linha { position:relative; padding:14px 34px 15px 0; border-bottom:1px solid var(--line); }
-.ed-linha .story-meta { margin-bottom:5px; }
-.ed-linha h4 { margin:0 0 5px; font:600 clamp(.98rem,1.1vw,1.15rem)/1.2 var(--display); letter-spacing:-.03em; }
-.ed-linha h4 button { display:-webkit-box; overflow:hidden; padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
-.ed-linha>p:not(.story-meta) { display:-webkit-box; overflow:hidden; margin:0; color:#5c574f; font-size:12px; line-height:1.5; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
-.ed-linha-seta { position:absolute; top:13px; right:0; padding:2px 5px; color:var(--blue); background:none; border:0; font-size:13px; }
-/* Sem cards, as linhas ocupam a largura toda em duas colunas, para não virar um fio interminável. */
-.ed-corpo.so-linhas .ed-linhas { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); column-gap:clamp(24px,3vw,44px); }
+/* Fotos: a proporção é do formato, não do arquivo. Toda fonte entrega og:image em
+   1200x630, então verticalidade aqui nasce de recorte, nunca de imagem vertical. */
+.ed-item img { width:100%; height:100%; display:block; object-fit:cover; transition:transform .45s; }
+.ed-item button:hover img { transform:scale(1.03); }
+.ed-foto-larga,.ed-foto-alta,.ed-foto-quadro { display:block; padding:0; overflow:hidden; border:0; border-radius:10px; background:var(--paper-deep); }
+.ed-foto-larga { width:100%; margin:14px 0 4px; aspect-ratio:16/9; }
+.ed-foto-alta { width:100%; margin-bottom:12px; aspect-ratio:4/3; }
+.ed-foto-quadro { flex:0 0 76px; width:76px; aspect-ratio:1; border-radius:8px; }
 
-/* Manchete: imagem inteira em faixa, texto no papel embaixo. Nunca texto sobre foto. */
-.ed-manchete { margin-top:40px; overflow:hidden; border-top:5px solid var(--ink); border-bottom:1px solid var(--ink); background:var(--paper-deep); }
-.ed-manchete-foto { display:block; width:100%; aspect-ratio:2.6/1; max-height:430px; padding:0; overflow:hidden; border:0; background:var(--paper-deep); }
-.ed-manchete-foto img { width:100%; height:100%; display:block; object-fit:cover; }
-.ed-manchete-texto { display:flex; flex-direction:column; align-items:flex-start; padding:clamp(24px,3.4vw,46px); }
-.ed-manchete-texto h2 { max-width:17ch; margin:6px 0 14px; font:600 clamp(2.1rem,4.2vw,4.1rem)/.93 var(--display); letter-spacing:-.062em; text-wrap:balance; }
-.ed-manchete-texto h2 button { padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; }
-.ed-manchete-texto>p:not(.story-meta) { max-width:64ch; margin:0 0 16px; color:#403d37; font-size:15.5px; line-height:1.6; }
-.ed-manchete .story-meta { color:var(--muted); }
-.ed-manchete .story-meta span:first-child { color:var(--blue); }
+.ed-dominante h3 { font:600 clamp(1.45rem,2.1vw,2.05rem)/1.04 var(--display); }
+.ed-dominante h3 button { -webkit-line-clamp:4; }
+.ed-dominante>p:not(.story-meta) { font-size:14px; -webkit-line-clamp:3; }
 
+.ed-retrato h3 { font:600 clamp(1.08rem,1.35vw,1.34rem)/1.12 var(--display); }
+.ed-retrato h3 button { -webkit-line-clamp:4; }
+
+.ed-compacto { flex-direction:row; gap:13px; }
+.ed-compacto>div { min-width:0; }
+.ed-compacto h4 { font:600 clamp(.95rem,1.05vw,1.08rem)/1.18 var(--display); }
+.ed-compacto h4 button { -webkit-line-clamp:4; }
+
+/* Nota: matéria sem foto não fica esperando imagem — ela vira bloco tipográfico,
+   com fio grosso em cima para ganhar o peso que a foto daria. */
+.ed-nota { border-top:3px solid var(--ink); padding-top:13px; }
+.ed-item + .ed-nota { border-top:3px solid var(--ink); }
+.ed-nota h3 { font:600 clamp(1.15rem,1.5vw,1.5rem)/1.1 var(--display); }
+.ed-nota h3 button { -webkit-line-clamp:4; }
+.ed-nota>p:not(.story-meta) { font-size:13px; -webkit-line-clamp:3; }
+
+.ed-linha { padding-right:30px; }
+.ed-linha h4 { font:600 clamp(.95rem,1.05vw,1.1rem)/1.18 var(--display); }
+.ed-linha h4 button { -webkit-line-clamp:3; }
+.ed-linha-seta { position:absolute; top:0; right:0; padding:2px 5px; color:var(--blue); background:none; border:0; font-size:13px; }
+.ed-item + .ed-linha .ed-linha-seta { top:clamp(18px,2vw,26px); }
+
+/* Capa: imagem em faixa, texto no papel embaixo. Nunca texto sobre foto. */
+.ed-capa { margin-top:40px; overflow:hidden; border-top:5px solid var(--ink); border-bottom:1px solid var(--ink); }
+.ed-capa-foto { display:block; width:100%; aspect-ratio:2.6/1; max-height:430px; padding:0; overflow:hidden; border:0; background:var(--paper-deep); }
+.ed-capa-foto img { width:100%; height:100%; display:block; object-fit:cover; }
+/* Lead de jornal: título à esquerda, entrada e chamada à direita. Empilhado, o título
+   com medida de leitura deixava metade da largura vazia — buraco do tamanho da capa. */
+.ed-capa-texto { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); align-items:end; column-gap:clamp(30px,5vw,80px); padding:clamp(24px,3.4vw,44px) 0 clamp(26px,3vw,38px); }
+.ed-capa-texto .story-meta { grid-column:1/-1; }
+.ed-capa-texto h2 { margin:6px 0 0; font:600 clamp(2.1rem,4.2vw,4.1rem)/.93 var(--display); letter-spacing:-.06em; text-wrap:balance; }
+.ed-capa-texto h2 button { padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; }
+.ed-capa-texto>p:not(.story-meta) { max-width:52ch; margin:0 0 14px; color:#403d37; font-size:16px; line-height:1.6; }
+.ed-capa-texto .read-link { justify-self:start; margin-top:0; }
+@media (max-width:900px) { .ed-capa-texto { grid-template-columns:1fr; } .ed-capa-texto h2 { margin-bottom:14px; } }
+.ed-capa .story-meta { display:flex; flex-wrap:wrap; gap:3px 10px; color:var(--muted); }
+.ed-capa .story-meta span:first-child { color:var(--blue); }
+
+/* Abaixo de 900px a banda vira uma coluna só: espremer três colunas de jornal em
+   tela de celular é o que produz texto de uma palavra por linha. */
 @media (max-width:900px) {
-  .ed-corpo { grid-template-columns:1fr; }
-  .ed-corpo.so-linhas .ed-linhas { grid-template-columns:1fr; }
-  .ed-manchete-foto { aspect-ratio:16/9; }
+  .ed-colunas { flex-direction:column; gap:0; }
+  .ed-coluna { padding:0; }
+  .ed-coluna + .ed-coluna { margin-top:clamp(18px,2vw,26px); border-left:0; border-top:1px solid var(--line); padding-top:clamp(18px,2vw,26px); }
+  .ed-foto-alta { aspect-ratio:16/10; }
+  .ed-capa-foto { aspect-ratio:16/9; }
 }
 
-/* A meta é um <p> como o resumo: reafirma o flex para os campos não colarem. */
-.ed-card .story-meta,.ed-linha .story-meta,.ed-manchete .story-meta { display:flex; flex-wrap:wrap; gap:3px 10px; }
-.ed-card .story-meta time,.ed-linha .story-meta time { margin-left:0; }
-.ed-card .story-meta { margin-bottom:2px; font-size:9.5px; }
+/* Arquivo: linhas em colunas automáticas, para a lista não virar um fio interminável. */
+.ed-arquivo-linhas { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); column-gap:clamp(24px,3vw,44px); border-top:2px solid var(--ink); padding-top:14px; }
+@media (max-width:900px) { .ed-arquivo-linhas { grid-template-columns:1fr; } }
+
+/* A mesma forma muda de proporção conforme a coluna em que caiu: sem isso, "retrato"
+   vira um único retângulo repetido a página inteira, que é o defeito de origem
+   reaparecendo um degrau abaixo. */
+.ed-coluna[data-span="7"] .ed-foto-alta,.ed-coluna[data-span="8"] .ed-foto-alta { aspect-ratio:16/9; }
+.ed-coluna[data-span="5"] .ed-foto-alta { aspect-ratio:3/2; }
+.ed-coluna[data-span="4"] .ed-foto-alta { aspect-ratio:4/3; }
+.ed-coluna[data-span="3"] .ed-foto-alta { aspect-ratio:1; }
+.ed-capa-entrada { display:flex; flex-direction:column; align-items:flex-start; }
