@@ -1,0 +1,143 @@
+{
+  "geradoEm": "2026-09-17T12:16:39+00:00",
+  "janelaDias": 14,
+  "itens": [
+    {
+      "fonte": "Claude Platform",
+      "nivel": 1,
+      "titulo": "Claude Platform — September 14, 2026",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview#september-14-2026",
+      "data": "2026-09-14",
+      "resumo": "The Messages API can now compact a conversation on demand on the Claude API, in beta with the compact-2026-09-04 beta header. Send the top-level compaction parameter, and the API returns a signed compaction block that summarizes the messages you sent. On later requests, send that block first, in place of those messages. You choose when to compact, the request can run in the background, and you can keep recent turns word for word after the summary. On models with preserved thinking, the thinking in those kept turns can stay valid.",
+      "imagem": null,
+      "imagemVerificada": false,
+      "orientacaoImagem": null,
+      "semImagemPropria": true
+    },
+    {
+      "fonte": "Claude Platform",
+      "nivel": 1,
+      "titulo": "Claude Platform — September 10, 2026",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview#september-10-2026",
+      "data": "2026-09-10",
+      "resumo": "Claude Managed Agents permission policies now include auto : the server evaluates each agent or MCP tool call and runs it, denies it, or pauses for your approval. agent.tool_use and agent.mcp_tool_use events report how each call was evaluated in an evaluation field alongside evaluated_permission . See Let the server evaluate each call with auto . Version 1.32.0 of the ant CLI adds ant beta:sessions connect , which attaches your terminal to a Claude Managed Agents session. You can follow the session live, send messages, and allow or deny tool calls that are waiting for approval. Pass --web to serve the Claude Console's session viewer locally and open the session there instead. See Connect to a Managed Agents session from your terminal .",
+      "imagem": null,
+      "imagemVerificada": false,
+      "orientacaoImagem": null,
+      "semImagemPropria": true
+    },
+    {
+      "fonte": "Claude Platform",
+      "nivel": 1,
+      "titulo": "Claude Platform — September 3, 2026",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview#september-3-2026",
+      "data": "2026-09-03",
+      "resumo": "Version 1.30.0 of the ant CLI adds ant apply , which creates and updates agents, environments, skills, memory stores, and deployments from files in your repository. Describe each resource in a file, run ant apply , and approve the plan it prints. Commit the claude-lock.json lockfile it writes so that later runs, on your machine or in CI, update the same resources instead of creating new ones. See Manage resources as code with ant apply . Per-message effort changes, in beta, are also available on Google Cloud for Claude Fable 5.1, Claude Mythos 5.1, and Claude Opus 5, with the same mid-conversation-output-config-2026-07-01 beta header.",
+      "imagem": null,
+      "imagemVerificada": false,
+      "orientacaoImagem": null,
+      "semImagemPropria": true
+    }
+  ],
+  "fontesComFalha": [
+    {
+      "fonte": "Anthropic",
+      "pagina": "https://www.anthropic.com/news",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='www.anthropic.com', port=443): Max retries exceeded with url: /rss.xml (Caused by ProxyError('",
+        "html: ProxyError: HTTPSConnectionPool(host='www.anthropic.com', port=443): Max retries exceeded with url: /news (Caused by ProxyError('Una"
+      ]
+    },
+    {
+      "fonte": "Claude",
+      "pagina": "https://claude.com/blog",
+      "erros": [
+        "html: ProxyError: HTTPSConnectionPool(host='claude.com', port=443): Max retries exceeded with url: /blog (Caused by ProxyError('Unable to "
+      ]
+    },
+    {
+      "fonte": "OpenAI",
+      "pagina": "https://openai.com/news/",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='openai.com', port=443): Max retries exceeded with url: /news/rss.xml (Caused by ProxyError('Un",
+        "html: ProxyError: HTTPSConnectionPool(host='openai.com', port=443): Max retries exceeded with url: /news/ (Caused by ProxyError('Unable to"
+      ]
+    },
+    {
+      "fonte": "OpenAI Developers",
+      "pagina": "https://developers.openai.com/changelog/",
+      "erros": [
+        "changelog: ProxyError: HTTPSConnectionPool(host='developers.openai.com', port=443): Max retries exceeded with url: /changelog/ (Caused by Proxy",
+        "html: ProxyError: HTTPSConnectionPool(host='developers.openai.com', port=443): Max retries exceeded with url: /changelog/ (Caused by Proxy"
+      ]
+    },
+    {
+      "fonte": "Google AI",
+      "pagina": "https://blog.google/technology/ai/",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='blog.google', port=443): Max retries exceeded with url: /technology/ai/rss/ (Caused by ProxyEr",
+        "html: ProxyError: HTTPSConnectionPool(host='blog.google', port=443): Max retries exceeded with url: /technology/ai/ (Caused by ProxyError("
+      ]
+    },
+    {
+      "fonte": "Google DeepMind",
+      "pagina": "https://deepmind.google/blog/",
+      "erros": [
+        "html: ProxyError: HTTPSConnectionPool(host='deepmind.google', port=443): Max retries exceeded with url: /blog/ (Caused by ProxyError('Unab"
+      ]
+    },
+    {
+      "fonte": "Gemini API",
+      "pagina": "https://ai.google.dev/gemini-api/docs/changelog",
+      "erros": [
+        "changelog: ProxyError: HTTPSConnectionPool(host='ai.google.dev', port=443): Max retries exceeded with url: /gemini-api/docs/changelog (Caused b",
+        "html: ProxyError: HTTPSConnectionPool(host='ai.google.dev', port=443): Max retries exceeded with url: /gemini-api/docs/changelog (Caused b"
+      ]
+    },
+    {
+      "fonte": "a16z",
+      "pagina": "https://a16z.com/news-content/",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='a16z.com', port=443): Max retries exceeded with url: /feed/ (Caused by ProxyError('Unable to c",
+        "html: ProxyError: HTTPSConnectionPool(host='a16z.com', port=443): Max retries exceeded with url: /news-content/ (Caused by ProxyError('Una"
+      ]
+    },
+    {
+      "fonte": "Y Combinator",
+      "pagina": "https://www.ycombinator.com/blog",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='www.ycombinator.com', port=443): Max retries exceeded with url: /blog/rss (Caused by ProxyErro",
+        "html: ProxyError: HTTPSConnectionPool(host='www.ycombinator.com', port=443): Max retries exceeded with url: /blog (Caused by ProxyError('U"
+      ]
+    },
+    {
+      "fonte": "Sequoia",
+      "pagina": "https://www.sequoiacap.com/",
+      "erros": [
+        "html: ProxyError: HTTPSConnectionPool(host='www.sequoiacap.com', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable"
+      ]
+    },
+    {
+      "fonte": "Hacker News",
+      "pagina": "https://news.ycombinator.com/",
+      "erros": [
+        "feed: ProxyError: HTTPSConnectionPool(host='news.ycombinator.com', port=443): Max retries exceeded with url: /rss (Caused by ProxyError('U",
+        "html: ProxyError: HTTPSConnectionPool(host='news.ycombinator.com', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unab"
+      ]
+    }
+  ],
+  "resumoPorFonte": {
+    "Claude Platform": 3,
+    "Anthropic": 0,
+    "Claude": 0,
+    "OpenAI": 0,
+    "OpenAI Developers": 0,
+    "Google AI": 0,
+    "Google DeepMind": 0,
+    "Gemini API": 0,
+    "a16z": 0,
+    "Y Combinator": 0,
+    "Sequoia": 0,
+    "Hacker News": 0
+  }
+}

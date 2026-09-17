@@ -1,0 +1,80 @@
+name: Coletar fontes do Attlas
+
+# A edição semanal é escrita num sandbox cuja política de rede bloqueia as fontes
+# primárias. Este runner não tem esse bloqueio: ele colhe a matéria-prima e commita
+# no repositório, e a execução do Claude lê do disco em vez de tentar a rede.
+#
+# Roda segunda 09:40 UTC, com folga antes da run editorial das 11:00 UTC.
+
+on:
+  schedule:
+    - cron: '40 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      dias:
+        description: 'Janela de recência, em dias'
+        required: false
+        default: '10'
+  push:
+    paths:
+      - '.github/workflows/coletar-fontes.yml'
+      - 'scripts/coletar_fontes.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: coleta-attlas
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependências
+        run: pip install --quiet requests beautifulsoup4
+
+      - name: Coletar fontes
+        id: coleta
+        run: python scripts/coletar_fontes.py --dias "${{ github.event.inputs.dias || '10' }}"
+
+      - name: Resumo da coleta
+        if: always()
+        run: |
+          if [ -f src/data/coleta/coleta-recente.json ]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, pathlib
+          d = json.loads(pathlib.Path('src/data/coleta/coleta-recente.json').read_text(encoding='utf-8'))
+          itens = d['itens']
+          print(f"## Coleta de {d['geradoEm']}\n")
+          print(f"- **{len(itens)}** itens na janela de {d['janelaDias']} dias")
+          print(f"- **{sum(1 for i in itens if i['imagemVerificada'])}** com imagem verificada\n")
+          print('| Fonte | Itens |'); print('|---|---|')
+          for fonte, total in d['resumoPorFonte'].items():
+              print(f'| {fonte} | {total} |')
+          if d['fontesComFalha']:
+              print('\n### Fontes que falharam\n')
+              for f in d['fontesComFalha']:
+                  print(f"- **{f['fonte']}** — {'; '.join(f['erros']) or 'nenhum item encontrado'}")
+          PY
+          else
+            echo 'A coleta não gerou arquivo.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commitar a coleta
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add src/data/coleta
+          if git diff --staged --quiet; then
+            echo 'Nada mudou na coleta.'
+          else
+            git commit -m "Coleta de fontes de $(date -u +%d/%m/%Y)"
+            git push
+          fi
