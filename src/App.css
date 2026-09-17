@@ -34,3 +34,50 @@ body { color:var(--ink); background:var(--paper); font-family:var(--sans); font-
 .topic-composition { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr); gap:28px; padding:18px 0 30px; border-bottom:1px solid var(--line); }.topic-composition.only-lines,.topic-composition.only-visuals { grid-template-columns:1fr; }.topic-composition.only-lines .topic-list { width:min(100%,820px); margin-left:auto; }.story-mosaic { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:12px; align-items:start; }.mosaic-story { min-width:0; overflow:hidden; border:1px solid #d8d1c5; border-radius:14px; background:rgba(255,255,255,.76); }.mosaic-story--horizontal { grid-column:span 4; }.mosaic-story--horizontal.mosaic-story--featured { grid-column:span 8; }.mosaic-story--vertical { grid-column:span 4; grid-row:span 2; }.mosaic-story--quadrada { grid-column:span 4; }.mosaic-story:only-child { grid-column:1/-1; }.mosaic-image { display:block; width:100%; padding:0; overflow:hidden; border:0; background:var(--paper-deep); }.mosaic-story--horizontal .mosaic-image { aspect-ratio:16/9; }.mosaic-story--vertical .mosaic-image { aspect-ratio:3/4; }.mosaic-story--quadrada .mosaic-image { aspect-ratio:1; }.mosaic-image img { width:100%; height:100%; display:block; object-fit:cover; transition:transform .45s ease; }.mosaic-image:hover img { transform:scale(1.025); }.mosaic-copy { padding:18px; }.mosaic-copy .story-meta { margin-bottom:10px; font-size:8px; }.mosaic-copy .story-meta time { margin-left:0; }.mosaic-copy h3 { margin:0; font:600 clamp(1.15rem,1.8vw,1.8rem)/1.02 var(--display); letter-spacing:-.045em; text-wrap:balance; }.mosaic-copy h3 button { padding:0; border:0; background:none; color:inherit; text-align:left; font:inherit; }.mosaic-copy>p:not(.story-meta) { margin:12px 0 0; color:#44413b; font-size:12px; line-height:1.55; }.mosaic-story--featured .mosaic-copy h3 { font-size:clamp(1.55rem,2.5vw,2.65rem); }.article-image--vertical { width:min(48%,520px)!important; height:auto!important; max-height:62vh; margin-inline:auto; object-fit:contain!important; background:var(--paper-deep); }.article-image--quadrada { width:min(70%,720px)!important; height:auto!important; margin-inline:auto; object-fit:contain!important; background:var(--paper-deep); }
 @media (max-width:1023px) { .topic-composition { grid-template-columns:1fr; }.story-mosaic .mosaic-story { grid-column:span 6; }.story-mosaic .mosaic-story--featured { grid-column:1/-1; }.topic-composition.only-lines .topic-list { width:100%; } }
 @media (max-width:640px) { .story-mosaic { grid-template-columns:1fr; }.story-mosaic .mosaic-story { grid-column:1; }.mosaic-story--vertical .mosaic-image { aspect-ratio:4/5; }.article-image--vertical,.article-image--quadrada { width:100%!important; } }
+
+/* ===== Capa editorial ===== */
+/* Toda matéria tem capa. Com foto legítima, usa a foto; sem foto, uma placa
+   tipográfica assinada pela área — nunca uma foto genérica de apoio. */
+.capa { display:block; width:100%; padding:0; border:0; background:none; overflow:hidden; }
+.capa--foto img { display:block; width:100%; height:100%; object-fit:cover; }
+.capa--placa { position:relative; display:grid; align-content:space-between; gap:10px; padding:18px; background:var(--placa); border:1px solid var(--ink); text-align:left; transition:background .25s, transform .25s; }
+.capa--placa:hover { background:var(--placa-hover); }
+.capa--placa .placa-sigla { font-family:var(--display); font-size:clamp(2.4rem,5vw,4.2rem); line-height:.8; letter-spacing:-.06em; color:var(--ink); }
+.capa--placa .placa-fonte { text-transform:uppercase; letter-spacing:.08em; font-size:10px; font-weight:700; color:var(--blue); }
+.capa--placa .placa-tipo { text-transform:uppercase; letter-spacing:.06em; font-size:9px; font-weight:600; color:var(--muted); }
+.capa--placa::after { content:""; position:absolute; inset:auto 0 0 0; height:3px; background:var(--blue); transform:scaleX(0); transform-origin:left; transition:transform .25s; }
+.capa--placa:hover::after { transform:scaleX(1); }
+.capa--lead { min-height:clamp(260px,38vw,440px); }
+.capa--brief { min-height:150px; }
+.capa--visual { min-height:230px; }
+.capa--mosaico { min-height:190px; }
+.capa--placa[data-prioridade="essencial"] .placa-sigla { color:var(--blue); }
+
+/* Cada área recebe seu próprio tom, para o mosaico não virar um bloco só. */
+.capa--placa[data-area="IA & Modelos"] { --placa:#e9e5dc; --placa-hover:#e2ddd2; }
+.capa--placa[data-area="Ferramentas & Agents"] { --placa:#e6e6e0; --placa-hover:#deded6; }
+.capa--placa[data-area="Front-end"] { --placa:#ece6da; --placa-hover:#e5ded0; }
+.capa--placa[data-area="Back-end"] { --placa:#e4e7e4; --placa-hover:#dce0dc; }
+.capa--placa[data-area="Dados & Bancos"] { --placa:#e7e4e8; --placa-hover:#e0dce2; }
+.capa--placa[data-area="Infra & Segurança"] { --placa:#eae3e3; --placa-hover:#e3dada; }
+
+/* ===== Janela de cobertura, contexto e arquivo ===== */
+.filter-row .janela { color:var(--muted); font-style:normal; text-transform:none; letter-spacing:0; font-size:11px; font-weight:400; }
+.section-nav .nav-arquivo { margin-left:auto; color:var(--blue); }
+.context-section { margin-top:54px; padding-top:10px; border-top:1px solid var(--line); }
+.archive { display:grid; gap:44px; padding-top:28px; }
+.archive-group .topic-list { margin-top:4px; }
+
+/* Manchete sem foto: o bloco de texto é a peça visual, em tinta escura sobre papel. */
+.text-lead-story .lead-copy { width:100%; min-height:0; padding:0; color:var(--ink); }
+.text-lead-story .lead-copy h2 { max-width:900px; font:600 clamp(2.65rem,5.4vw,5.8rem)/.9 var(--display); letter-spacing:-.07em; }
+.text-lead-story .lead-copy .story-meta { color:var(--muted); }
+.text-lead-story .lead-copy .story-meta span:first-child { color:var(--blue); }
+.text-lead-story .lead-copy>p:not(.story-meta) { max-width:65ch; color:#403d37; font-size:16px; line-height:1.6; }
+.text-lead-story .lead-copy .read-link { color:var(--blue); }
+
+/* A placa encolhe junto com o módulo pequeno das leituras essenciais. */
+.capa--placa.brief-image { min-height:0; padding:10px; border-radius:9px; }
+.capa--placa.brief-image .placa-sigla { font-size:1.5rem; }
+.capa--placa.brief-image .placa-tipo { display:none; }
+.capa--placa.mosaic-image { min-height:0; }
