@@ -30,8 +30,16 @@ from xml.etree import ElementTree
 import requests
 from bs4 import BeautifulSoup
 
+try:
+    from scrapling.fetchers import Fetcher as _Scrapling
+except ImportError:  # o runner instala; localmente pode não existir
+    _Scrapling = None
+
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36"
 TIMEOUT = 30
+# Cloudflare devolve 403 a cliente sem impressão digital de navegador (openai.com faz isso).
+# A ordem importa: safari passa onde chrome apanha.
+IMPERSONACOES = ("safari", "chrome", "firefox")
 SAIDA = Path("src/data/coleta")
 
 
@@ -93,6 +101,35 @@ def sessao() -> requests.Session:
     return s
 
 
+def buscar(s: requests.Session, url: str) -> str:
+    """
+    Requisição simples primeiro. Se o site responder com desafio anti-bot (403/429),
+    tenta de novo pelo Scrapling, que imita a impressão digital TLS de um navegador.
+    """
+    try:
+        resposta = s.get(url, timeout=TIMEOUT)
+        if resposta.status_code not in (403, 429):
+            resposta.raise_for_status()
+            return resposta.text
+    except requests.RequestException:
+        if _Scrapling is None:
+            raise
+
+    if _Scrapling is None:
+        raise RuntimeError(f"desafio anti-bot em {url} e Scrapling indisponível")
+
+    ultimo = None
+    for identidade in IMPERSONACOES:
+        try:
+            pagina = _Scrapling.get(url, timeout=TIMEOUT, impersonate=identidade)
+            if pagina.status < 400:
+                return str(pagina.body)
+            ultimo = f"HTTP {pagina.status} com {identidade}"
+        except Exception as e:
+            ultimo = f"{type(e).__name__} com {identidade}: {str(e)[:60]}"
+    raise RuntimeError(f"bloqueado mesmo com impersonação ({ultimo})")
+
+
 def parse_data(texto: str | None) -> str | None:
     """Normaliza datas de feed para AAAA-MM-DD. Formato desconhecido vira None, nunca um palpite."""
     if not texto:
@@ -111,9 +148,7 @@ def parse_data(texto: str | None) -> str | None:
 def do_feed(s: requests.Session, fonte: Fonte) -> list[Item]:
     if not fonte.feed:
         return []
-    resposta = s.get(fonte.feed, timeout=TIMEOUT)
-    resposta.raise_for_status()
-    raiz = ElementTree.fromstring(resposta.content)
+    raiz = ElementTree.fromstring(buscar(s, fonte.feed).encode("utf-8", "replace"))
     itens: list[Item] = []
 
     # RSS 2.0
@@ -139,9 +174,7 @@ def do_feed(s: requests.Session, fonte: Fonte) -> list[Item]:
 
 
 def do_html(s: requests.Session, fonte: Fonte) -> list[Item]:
-    resposta = s.get(fonte.pagina, timeout=TIMEOUT)
-    resposta.raise_for_status()
-    sopa = BeautifulSoup(resposta.text, "html.parser")
+    sopa = BeautifulSoup(buscar(s, fonte.pagina), "html.parser")
     base = f"{urlparse(fonte.pagina).scheme}://{urlparse(fonte.pagina).netloc}"
     vistos: set[str] = set()
     itens: list[Item] = []
@@ -170,9 +203,7 @@ def do_changelog(s: requests.Session, fonte: Fonte) -> list[Item]:
     página, como títulos seguidos do texto. Cada entrada vira um item, com âncora
     própria quando existe, para o link levar direto ao trecho certo.
     """
-    resposta = s.get(fonte.pagina, timeout=TIMEOUT)
-    resposta.raise_for_status()
-    sopa = BeautifulSoup(resposta.text, "html.parser")
+    sopa = BeautifulSoup(buscar(s, fonte.pagina), "html.parser")
     itens: list[Item] = []
 
     for titulo_no in sopa.find_all(["h2", "h3"]):
@@ -205,11 +236,10 @@ def do_changelog(s: requests.Session, fonte: Fonte) -> list[Item]:
 def enriquecer(s: requests.Session, item: Item) -> None:
     """Abre a matéria para pegar og:image, resumo e data. Falha aqui não descarta o item."""
     try:
-        resposta = s.get(item.link, timeout=TIMEOUT)
-        resposta.raise_for_status()
+        html = buscar(s, item.link)
     except Exception:
         return
-    sopa = BeautifulSoup(resposta.text, "html.parser")
+    sopa = BeautifulSoup(html, "html.parser")
 
     def meta(*nomes: str) -> str | None:
         for nome in nomes:

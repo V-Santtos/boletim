@@ -1,5 +1,5 @@
 {
-  "geradoEm": "2026-09-17T12:21:22+00:00",
+  "geradoEm": "2026-09-17T12:33:55+00:00",
   "janelaDias": 10,
   "itens": [
     {
@@ -245,18 +245,6 @@
     {
       "fonte": "Hacker News",
       "nivel": 5,
-      "titulo": "Lucasart's Afterlife",
-      "link": "https://togameforlife.wordpress.com/2023/12/09/on-lucasarts-afterlife/",
-      "data": "2026-09-15",
-      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49719751\">Comments</a>",
-      "imagem": "https://togameforlife.wordpress.com/wp-content/uploads/2023/12/screenshot-2023-12-09-074944.jpg",
-      "imagemVerificada": true,
-      "orientacaoImagem": "horizontal",
-      "semImagemPropria": false
-    },
-    {
-      "fonte": "Hacker News",
-      "nivel": 5,
       "titulo": "Online Z3 Guide",
       "link": "https://microsoft.github.io/z3guide/",
       "data": "2026-09-15",
@@ -264,6 +252,18 @@
       "imagem": null,
       "imagemVerificada": false,
       "orientacaoImagem": null,
+      "semImagemPropria": false
+    },
+    {
+      "fonte": "Hacker News",
+      "nivel": 5,
+      "titulo": "Lucasart's Afterlife",
+      "link": "https://togameforlife.wordpress.com/2023/12/09/on-lucasarts-afterlife/",
+      "data": "2026-09-15",
+      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49719751\">Comments</a>",
+      "imagem": "https://togameforlife.wordpress.com/wp-content/uploads/2023/12/screenshot-2023-12-09-074944.jpg",
+      "imagemVerificada": true,
+      "orientacaoImagem": "horizontal",
       "semImagemPropria": false
     },
     {
