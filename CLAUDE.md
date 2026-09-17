@@ -19,7 +19,7 @@ O portal é publicado na Vercel a partir do branch `main`. **Uma edição que n�
 
 ## Deploy
 
-- Projeto Vercel: `attlas-boletim` (conta `v-santtos' projects`), ligado a `V-Santtos/boletim`.
+- Projeto Vercel: `attlas` — https://attlas-six.vercel.app (conta `v-santtos' projects`), ligado a `V-Santtos/boletim`.
 - Produção sai da `main`; cada PR gera um preview.
 - `vercel.json` fixa framework, build e saída. O build usa `CI=false` de propósito: um warning do CRA não pode derrubar a publicação semanal.
 
