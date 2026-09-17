@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Lenis from 'lenis';
 import './App.css';
-import { edicaoAtual } from './data/edicao-2026-08-27';
+import { edicoes, edicaoMaisRecente } from './data/edicoes';
 import { useFiltros } from './hooks/useFiltros';
 import { Area, Materia } from './types';
 import { PainelLeitura } from './components/PainelLeitura';
@@ -23,6 +23,7 @@ const temImagem = (materia: Materia) => Boolean(imagemDaMateria(materia));
 const orientacaoDaImagem = (materia: Materia) => materia.orientacaoImagem ?? 'horizontal';
 
 function App() {
+  const [edicaoAtual, setEdicaoAtual] = useState(edicaoMaisRecente);
   const [areaNav, setAreaNav] = useState<Area | 'todas'>('todas');
   const [materiaAberta, setMateriaAberta] = useState<Materia | null>(null);
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
@@ -35,7 +36,7 @@ function App() {
 
   const materiasOrdenadas = useMemo(() => [...edicaoAtual.materias].sort(
     (a, b) => prioridadeOrdem[a.prioridade] - prioridadeOrdem[b.prioridade]
-  ), []);
+  ), [edicaoAtual]);
   const materiasComAreaNav = areaNav === 'todas' ? materiasOrdenadas : materiasOrdenadas.filter((materia) => materia.area === areaNav);
   const { filtros, materiasFiltradas, atualizarFiltro, limparFiltros } = useFiltros(materiasComAreaNav);
   const manchete = materiasFiltradas.find((materia) => materia.prioridade === 'essencial' && temImagem(materia) && orientacaoDaImagem(materia) === 'horizontal')
@@ -54,7 +55,7 @@ function App() {
 
   return <div className="app">
     <header className="masthead" aria-label="Cabeçalho do Attlas">
-      <div className="edition-row page-width"><p>{edicaoAtual.dataEdicao} <span>·</span> Edição semanal</p><label className="search"><span className="sr-only">Buscar matérias</span><input type="search" placeholder="Buscar no boletim" value={filtros.busca} onChange={(event) => atualizarFiltro('busca', event.target.value)} /></label></div>
+      <div className="edition-row page-width"><p>{edicaoAtual.dataEdicao} <span>·</span> Edição semanal</p><div className="edition-controls">{edicoes.length > 1 && <label className="select-label edition-select"><span>Edição</span><select value={edicaoAtual.id} onChange={(event) => { const ed = edicoes.find((e) => e.id === event.target.value); if (ed) { setEdicaoAtual(ed); setAreaNav('todas'); setMateriaAberta(null); } }}>{edicoes.map((ed) => <option key={ed.id} value={ed.id}>{ed.dataEdicao}</option>)}</select></label>}<label className="search"><span className="sr-only">Buscar matérias</span><input type="search" placeholder="Buscar no boletim" value={filtros.busca} onChange={(event) => atualizarFiltro('busca', event.target.value)} /></label></div></div>
       <div className="name-row page-width"><div className="issue-mark">AT</div><div><p className="eyebrow">Curadoria para produto e engenharia</p><h1>Attlas</h1></div><p className="updated">Atualizado em<br /><strong>{edicaoAtual.ultimaAtualizacao}</strong></p></div>
       <nav className="section-nav page-width" aria-label="Seções do boletim"><button className={areaNav === 'todas' ? 'active' : ''} onClick={() => setAreaNav('todas')}>Ver tudo</button>{AREAS.map((area) => <button key={area} className={areaNav === area ? 'active' : ''} onClick={() => setAreaNav(area)}>{AREA_LABEL[area]}</button>)}</nav>
     </header>

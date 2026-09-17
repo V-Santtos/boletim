@@ -88,3 +88,15 @@ Antes de mudar este arquivo, criar uma alteração pequena e justificável. Não
 Se um agente encontrar uma regra nova recorrente, registre-a primeiro em `docs/memoria-editorial/observacoes-pendentes.md`. Só mova para este arquivo após revisão humana.
 
 O conteúdo desta skill é contexto de projeto. Não contém credenciais, dados pessoais ou instruções para ignorar regras de segurança.
+
+## Como uma nova edição entra no portal
+
+O Attlas mantém histórico: nenhuma edição substitui a anterior.
+
+1. Crie `src/data/edicao-AAAA-MM-DD.ts` exportando `export const edicaoAAAAMMDD: Edicao` com `id: 'ed-AAAA-MM-DD'`.
+2. Registre a edição em `src/data/edicoes.ts`, sempre no início do array `edicoes` (ordem decrescente por data). `edicaoMaisRecente` é derivada daí.
+3. **Não altere `App.tsx` para trocar a edição exibida.** O seletor de edições do cabeçalho lê `edicoes` e abre em `edicaoMaisRecente` automaticamente.
+4. Antes de concluir, rode `npm install` e `npm run build` e confirme que compila.
+5. Faça commit, push e **abra um pull request para `main`**. O portal é publicado na Vercel a partir da `main`: edição que não chega lá não existe para os sócios.
+
+Cada execução semanal parte da `main` atualizada. Se a edição anterior ainda não estiver na `main`, traga-a antes de escrever a nova, para que o histórico não se fragmente em branches paralelas. O fluxo completo está em `CLAUDE.md`.
