@@ -39,15 +39,27 @@ export interface BandaComposta {
   colunas: ColunaComposta[];
 }
 
-/** Proporção altura/largura da foto em cada formato. 0 = formato sem foto. */
-const PROPORCAO_FOTO: Record<Formato, number> = {
-  capa: 0.52,
-  dominante: 0.5625, // 16/9
-  retrato: 0.75, // 4/3 — recorte vertical sem virar torre em coluna larga
-  compacto: 0, // foto pequena ao lado do texto, não empilha altura
-  nota: 0,
-  linha: 0,
-};
+/**
+ * Largura real de uma coluna por unidade de span, medida no render a 1440px:
+ * span 3 = 321px, span 4 = 443px, span 5 = 516px.
+ */
+const LARGURA_POR_SPAN = 104;
+
+/**
+ * Proporção altura/largura da foto. Precisa espelhar o CSS, incluindo a variação de
+ * `retrato` por coluna — errar isso era o defeito do estimador: ele supunha retrato
+ * fixo em 4/3 e concluía que em coluna estreita ele encolhia, quando na medição real
+ * retrato mede quase o mesmo em qualquer largura (477px, 441px e 452px), porque a
+ * proporção fica mais alta justamente onde a coluna é mais estreita.
+ */
+function proporcaoDaFoto(formato: Formato, span: number): number {
+  if (formato === 'dominante') return 0.5625; // 16/9
+  if (formato !== 'retrato') return 0;
+  if (span >= 7) return 0.5625;
+  if (span >= 5) return 0.667; // 3/2
+  if (span === 4) return 0.75; // 4/3
+  return 1; // quadrada
+}
 
 /**
  * Moldes de coluna por quantidade de matérias na banda. Somam sempre 12, então a
@@ -62,6 +74,9 @@ const PROPORCAO_FOTO: Record<Formato, number> = {
 const CANDIDATOS: Record<number, number[][]> = {
   1: [[12]],
   2: [[7, 5], [5, 7], [8, 4], [4, 8]],
+  // Três matérias em três colunas é um item por coluna, e aí a altura de cada matéria
+  // manda sozinha — não há empilhamento para compensar. Só duas colunas fecham parelho.
+  3: [[7, 5], [5, 7], [8, 4], [4, 8]],
 };
 const CANDIDATOS_PADRAO = [
   [5, 4, 3], [3, 4, 5], [4, 5, 3], [3, 5, 4], [4, 3, 5], [5, 3, 4],
@@ -75,24 +90,31 @@ const temFoto = (materia: Materia) => Boolean(materia.imagem);
  * porque serve para comparar colunas, não para posicionar nada.
  */
 function alturaEstimada(materia: Materia, formato: Formato, span: number): number {
-  const largura = span * 100;
-  let altura = 0;
+  const largura = span * LARGURA_POR_SPAN;
+  const linhasDoTitulo = (corpoDaLetra: number, disponivel: number) =>
+    Math.ceil(materia.tituloPt.length / Math.max(1, disponivel / corpoDaLetra));
 
-  if (temFoto(materia) && PROPORCAO_FOTO[formato] > 0) altura += largura * PROPORCAO_FOTO[formato];
-  if (formato === 'compacto' && temFoto(materia)) altura += 90;
+  // Compacto é foto de 76px ao LADO do texto: quem manda na altura é o mais alto dos
+  // dois, não a soma. Somar os dois inflava o formato mais leve da página em ~90px.
+  if (formato === 'compacto') {
+    const texto = linhasDoTitulo(10, largura - 89) * 19 + 26;
+    return Math.max(temFoto(materia) ? 76 : 0, texto) + 46;
+  }
 
-  // Título: quanto mais estreita a coluna, mais linhas o mesmo título ocupa.
-  const corpoDaLetra = formato === 'dominante' ? 17 : formato === 'nota' ? 13 : 11;
-  const linhasTitulo = Math.ceil(materia.tituloPt.length / Math.max(1, largura / corpoDaLetra));
-  altura += linhasTitulo * (formato === 'dominante' ? 42 : formato === 'nota' ? 28 : 22);
+  let altura = temFoto(materia) ? largura * proporcaoDaFoto(formato, span) : 0;
+
+  // Quanto mais estreita a coluna, mais linhas o mesmo título ocupa.
+  const corpoDaLetra = formato === 'dominante' ? 16 : formato === 'nota' ? 13 : 11;
+  altura += linhasDoTitulo(corpoDaLetra, largura) * (formato === 'dominante' ? 32 : formato === 'nota' ? 26 : 22);
 
   // Só os formatos largos mostram o resumo; nos estreitos ele seria ilegível.
   if (formato === 'dominante' || formato === 'nota') {
-    const linhasResumo = Math.ceil(materia.resumoCurto.length / Math.max(1, largura / 7));
-    altura += Math.min(linhasResumo, 4) * 22;
+    const linhasResumo = Math.ceil(materia.resumoCurto.length / Math.max(1, largura / 7.4));
+    altura += Math.min(linhasResumo, 4) * 21;
   }
 
-  return altura + 72; // meta, respiro e o link de leitura
+  // Linha não tem resumo nem link de leitura, então carrega bem menos moldura.
+  return altura + (formato === 'linha' ? 42 : 66);
 }
 
 /**
@@ -346,20 +368,32 @@ export function compor(manchete: Materia | null, grupos: EntradaDeBanda[]): Band
       return { molde, colunas, vao: Math.max(...alturas) - Math.min(...alturas) };
     });
 
-    const LIMITE_DE_VAO = 200;
+    const LIMITE_DE_VAO = 140; // margem para o erro do estimador: o vão real sai acima do previsto
     const aceitaveis = avaliados.filter((op) => op.vao <= LIMITE_DE_VAO);
-    const pool = aceitaveis.length > 0 ? aceitaveis : avaliados;
 
-    pool.forEach((op) => {
-      const repeticao = op.molde.join('-') === moldeAnterior ? 2 : 0;
-      // Menos colunas custa: é o que faz a banda com material suficiente abrir em três.
-      const custo = repeticao * 100 + (6 - op.colunas.length) * 10 + op.vao / 1000;
-      if (custo < melhorCusto) {
-        melhorCusto = custo;
-        escolhidas = op.colunas;
-        escolhido = op.molde.join('-');
-      }
-    });
+    if (aceitaveis.length > 0) {
+      aceitaveis.forEach((op) => {
+        const repeticao = op.molde.join('-') === moldeAnterior ? 2 : 0;
+        // Menos colunas custa: é o que faz a banda com material suficiente abrir em três.
+        const custo = repeticao * 100 + (6 - op.colunas.length) * 10 + op.vao / 1000;
+        if (custo < melhorCusto) {
+          melhorCusto = custo;
+          escolhidas = op.colunas;
+          escolhido = op.molde.join('-');
+        }
+      });
+    } else {
+      // Plano B: quando nada cabe no limite, o único critério é fechar o mais parelho
+      // possível. Continuar premiando variedade aqui escolheria justamente o molde de
+      // maior vão — a banda ficaria mais variada e mais quebrada ao mesmo tempo.
+      avaliados.forEach((op) => {
+        if (op.vao < melhorCusto) {
+          melhorCusto = op.vao;
+          escolhidas = op.colunas;
+          escolhido = op.molde.join('-');
+        }
+      });
+    }
 
     moldeAnterior = escolhido;
     bandas.push({

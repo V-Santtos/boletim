@@ -126,6 +126,23 @@ function App() {
     return compor(manchete ?? null, grupos);
   }, [candidatas, manchete, edicaoAtual]);
 
+  /**
+   * Ordem de leitura da edição: banda, depois coluna, depois item — a ordem em que o
+   * olho percorre a página, não a ordem em que o motor distribuiu. É ela que alimenta
+   * o "anterior / próxima" do painel, para dar de ler a edição inteira de ponta a
+   * ponta sem fechar e procurar onde parou.
+   */
+  const ordemDeLeitura = useMemo(
+    () => bandas.flatMap((banda) => banda.colunas.flatMap((coluna) => coluna.itens.map((item) => item.materia))),
+    [bandas]
+  );
+  const listaDeLeitura = vista === 'arquivo' ? materiasFiltradas : ordemDeLeitura;
+  const indiceAberto = materiaAberta ? listaDeLeitura.findIndex((m) => m.id === materiaAberta.id) : -1;
+  const navegar = (passo: number) => {
+    const proximo = listaDeLeitura[indiceAberto + passo];
+    if (proximo) setMateriaAberta(proximo);
+  };
+
   const trocarVista = (proxima: 'edicao' | 'arquivo') => { setVista(proxima); setAreaNav('todas'); setMateriaAberta(null); };
 
   return <div className="app">
@@ -169,11 +186,24 @@ function App() {
 
       {vista === 'arquivo' && materiasFiltradas.length > 0 && <ArquivoLista materias={materiasFiltradas as MateriaArquivada[]} onOpen={abrir} />}
 
-      {vista === 'edicao' && manchete && bandas.map((banda) => <Banda key={banda.id} banda={banda} onOpen={abrir} />)}
+      {vista === 'edicao' && manchete && <div className="ed-composicao" key={`${edicaoAtual.id}-${areaNav}-${materiasFiltradas.length}-${filtros.busca}`}>
+        {bandas.map((banda) => <Banda key={banda.id} banda={banda} onOpen={abrir} />)}
+      </div>}
     </main>
 
     <footer className="footer page-width"><p>Attlas <span>—</span> curadoria semanal para dois sócios.</p><p>Fontes oficiais, documentação e contexto editorial.</p></footer>
-    {materiaAberta && <PainelLeitura materia={materiaAberta} imagem={imagemDaMateria(materiaAberta)} areaLabel={AREA_LABEL[materiaAberta.area]} onFechar={() => setMateriaAberta(null)} />}
+    {materiaAberta && <PainelLeitura
+      materia={materiaAberta}
+      imagem={imagemDaMateria(materiaAberta)}
+      areaLabel={AREA_LABEL[materiaAberta.area]}
+      posicao={indiceAberto + 1}
+      total={listaDeLeitura.length}
+      temAnterior={indiceAberto > 0}
+      temProxima={indiceAberto >= 0 && indiceAberto < listaDeLeitura.length - 1}
+      onAnterior={() => navegar(-1)}
+      onProxima={() => navegar(1)}
+      onFechar={() => setMateriaAberta(null)}
+    />}
   </div>;
 }
 
