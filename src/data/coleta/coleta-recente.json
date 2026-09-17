@@ -1,5 +1,5 @@
 {
-  "geradoEm": "2026-09-17T12:33:55+00:00",
+  "geradoEm": "2026-09-17T12:35:34+00:00",
   "janelaDias": 10,
   "itens": [
     {
@@ -41,11 +41,11 @@
     {
       "fonte": "Hacker News",
       "nivel": 5,
-      "titulo": "GLM Built Its Own Inference Infrastructure",
-      "link": "https://z.ai/blog/glm-built-its-inference-infrastructure",
+      "titulo": "Keys Not Included: recovering the signing keys for US driver's license barcodes",
+      "link": "https://ryan.science/blog/keys-not-included",
       "data": "2026-09-17",
-      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49737922\">Comments</a>",
-      "imagem": "https://z-cdn-media.chatglm.cn/prompts-rich-media-resources/glm-built-its-inference-infrastructure/20260917-143951.jpeg?w=1376&h=768&fit=fill",
+      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49735930\">Comments</a>",
+      "imagem": "https://ryan.science/tessa.png",
       "imagemVerificada": true,
       "orientacaoImagem": "horizontal",
       "semImagemPropria": false
@@ -53,11 +53,11 @@
     {
       "fonte": "Hacker News",
       "nivel": 5,
-      "titulo": "Keys Not Included: recovering the signing keys for US driver's license barcodes",
-      "link": "https://ryan.science/blog/keys-not-included",
+      "titulo": "GLM Built Its Own Inference Infrastructure",
+      "link": "https://z.ai/blog/glm-built-its-inference-infrastructure",
       "data": "2026-09-17",
-      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49735930\">Comments</a>",
-      "imagem": "https://ryan.science/tessa.png",
+      "resumo": "<a href=\"https://news.ycombinator.com/item?id=49737922\">Comments</a>",
+      "imagem": "https://z-cdn-media.chatglm.cn/prompts-rich-media-resources/glm-built-its-inference-infrastructure/20260917-143951.jpeg?w=1376&h=768&fit=fill",
       "imagemVerificada": true,
       "orientacaoImagem": "horizontal",
       "semImagemPropria": false
