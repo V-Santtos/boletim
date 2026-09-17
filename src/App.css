@@ -81,3 +81,20 @@ body { color:var(--ink); background:var(--paper); font-family:var(--sans); font-
 .capa--placa.brief-image .placa-sigla { font-size:1.5rem; }
 .capa--placa.brief-image .placa-tipo { display:none; }
 .capa--placa.mosaic-image { min-height:0; }
+
+/* ===== Módulos sem foto ===== */
+/* O tratamento de foto escura com texto branco por cima só faz sentido sobre imagem.
+   Sem foto, o módulo volta a ser papel com tinta. */
+.visual-story.sem-foto { display:grid; grid-template-rows:auto 1fr; background:rgba(255,255,255,.78); border:1px solid #d8d1c5; color:var(--ink); min-height:0; }
+.visual-story.sem-foto::after { display:none; }
+.visual-story.sem-foto .visual-copy { position:relative; padding:20px 22px; }
+.visual-story.sem-foto .story-meta { color:var(--muted); }
+.visual-story.sem-foto .story-meta span:first-child { color:var(--blue); }
+.visual-story.sem-foto h3 { color:var(--ink); font-size:clamp(1.35rem,2vw,2rem); line-height:1.02; }
+.visual-story.sem-foto p:not(.story-meta) { display:block; color:#403d37; }
+.visual-story.sem-foto .read-link { color:var(--blue); }
+.visual-story.sem-foto .capa--placa { min-height:150px; max-height:190px; }
+
+/* A placa não estica: sem teto, o grid a esparrama por meia tela vazia. */
+.mosaic-story.sem-foto .capa--placa { aspect-ratio:auto; min-height:120px; max-height:150px; }
+.mosaic-story--featured.sem-foto .capa--placa { min-height:150px; max-height:200px; }

@@ -40,9 +40,19 @@ const ordenar = (materias: Materia[]) => [...materias].sort((a, b) => {
 
 const porData = (materias: Materia[]) => [...materias].sort((a, b) => b.dataISO.localeCompare(a.dataISO));
 
-/** Matéria anterior à janela da edição é contexto, não notícia da semana. */
-const dentroDaJanela = (materia: Materia, edicao: Edicao) =>
-  !edicao.periodoCobertura || materia.dataISO >= edicao.periodoCobertura.de;
+/**
+ * Contexto é o que é francamente velho para a edição — mais de três semanas antes dela.
+ * A janela de cobertura segue valendo como alvo da apuração, mas usá-la para dividir a
+ * home jogaria metade da edição para o rodapé: as fontes publicam com atraso e a semana
+ * real de uma edição é mais larga que sete dias.
+ */
+const DIAS_ATE_VIRAR_CONTEXTO = 21;
+
+const dentroDaJanela = (materia: Materia, edicao: Edicao) => {
+  const corte = new Date(`${edicao.dataISO}T00:00:00Z`);
+  corte.setUTCDate(corte.getUTCDate() - DIAS_ATE_VIRAR_CONTEXTO);
+  return materia.dataISO >= corte.toISOString().slice(0, 10);
+};
 
 const formatarDia = (iso: string) => {
   const [ano, mes, dia] = iso.split('-');
@@ -191,7 +201,7 @@ function SectionHeading({ index, title, action }: { index: string; title: string
 
 function BriefStory({ materia, onOpen }: { materia: Materia; onOpen: () => void }) { return <article className="brief-story"><Capa materia={materia} formato="brief" onOpen={onOpen} /><div className="brief-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><button className="brief-arrow" onClick={onOpen} aria-label={`Abrir ${materia.tituloPt}`}>↗</button></div></article>; }
 
-function VisualStory({ materia, featured, onOpen }: { materia: Materia; featured: boolean; onOpen: () => void }) { return <article className={`visual-story ${featured ? 'visual-featured' : ''} image-${orientacaoDaImagem(materia)}`}><Capa materia={materia} formato="visual" onOpen={onOpen} /><div className="visual-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Ler análise <span>↗</span></button></div></article>; }
+function VisualStory({ materia, featured, onOpen }: { materia: Materia; featured: boolean; onOpen: () => void }) { return <article className={`visual-story ${featured ? 'visual-featured' : ''} ${temImagem(materia) ? '' : 'sem-foto'} image-${orientacaoDaImagem(materia)}`}><Capa materia={materia} formato="visual" onOpen={onOpen} /><div className="visual-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Ler análise <span>↗</span></button></div></article>; }
 
 /**
  * Cada área abre com um mosaico e escoa para lista. As essenciais e relevantes
@@ -212,7 +222,7 @@ function TopicSection({ index, area, materias, onOpen }: { index: string; area: 
 
 function MosaicStory({ materia, destaque, onOpen }: { materia: Materia; destaque: boolean; onOpen: () => void }) {
   const orientacao = temImagem(materia) ? orientacaoDaImagem(materia) : 'horizontal';
-  return <article className={`mosaic-story mosaic-story--${orientacao} ${destaque ? 'mosaic-story--featured' : ''}`}>
+  return <article className={`mosaic-story mosaic-story--${orientacao} ${destaque ? 'mosaic-story--featured' : ''} ${temImagem(materia) ? '' : 'sem-foto'}`}>
     <Capa materia={materia} formato="mosaico" onOpen={onOpen} />
     <div className="mosaic-copy"><StoryMeta materia={materia} /><h3><button onClick={onOpen}>{materia.tituloPt}</button></h3><p>{materia.resumoCurto}</p><button className="read-link" onClick={onOpen}>Entender a notícia <span>↗</span></button></div>
   </article>;
