@@ -19,7 +19,7 @@ export const edicao20260921: Edicao = {
     'A matéria sobre a crítica ao MCP (mat-308) é de 14/09/2026, fora da janela de cobertura desta edição (17–21/09). Entra como contexto porque não foi coberta na edição anterior e a discussão no Hacker News permaneceu ativa durante a semana.',
     'O post de Boris Cherny (mat-311) é tratado como sinal editorial de pessoa acompanhada, não como reportagem técnica.',
     'Esta edição usa mat-301 em diante para manter separação das faixas de ID anteriores (mat-101 nas edições de 07/09 e 14/09, mat-201 na edição de 17/09).',
-    'Nenhuma imagem de fonte primária estava disponível para a maioria das matérias desta semana. Apenas a matéria do AX (mat-304) usa imagem do Google Cloud Blog. As demais entram como linhas editoriais.',
+    'Sete das onze matérias trazem imagem og:image da fonte primária. Quatro ficam sem imagem: Antigravity Agent e Compliance API (entradas de changelog sem og:image), Exfiltrate Your Weights (página sem conteúdo HTML) e Boris Cherny (blog pessoal sem og:image).',
   ],
   materias: [
     {
@@ -41,6 +41,9 @@ export const edicao20260921: Edicao = {
       prioridade: 'essencial',
       tipo: 'lançamento',
       tags: ['Claude', 'Projects', 'Claude Code', 'threads', 'coordenação', 'agentes'],
+      imagem:
+        'https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aac1eaf2091cb214f764427_og_projects-redesigned.jpg',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-302',
@@ -61,6 +64,9 @@ export const edicao20260921: Edicao = {
       prioridade: 'essencial',
       tipo: 'pesquisa',
       tags: ['Anthropic', 'automação', 'P&D', 'métricas', 'agentes', 'segurança'],
+      imagem:
+        'https://cdn.sanity.io/images/4zrzovbb/website/9cf3a514384821aeb53ff34d878b210715cd5c06-1200x630.jpg',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-303',
@@ -81,6 +87,9 @@ export const edicao20260921: Edicao = {
       prioridade: 'essencial',
       tipo: 'notícia',
       tags: ['Anthropic', 'Accenture', 'avaliação', 'governança', 'segurança'],
+      imagem:
+        'https://cdn.sanity.io/images/4zrzovbb/website/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-304',
@@ -124,6 +133,9 @@ export const edicao20260921: Edicao = {
       prioridade: 'relevante',
       tipo: 'lançamento',
       tags: ['Anthropic', 'Claude', 'ciências da vida', 'verificação', 'segurança', 'governança'],
+      imagem:
+        'https://www.anthropic.com/api/opengraph-illustration?name=Object%20DoubleHelix&backgroundColor=cactus',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-306',
@@ -144,6 +156,9 @@ export const edicao20260921: Edicao = {
       prioridade: 'relevante',
       tipo: 'case',
       tags: ['Claude', 'Fable 5', 'Balyasny', 'governança', 'agentes', 'finanças'],
+      imagem:
+        'https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6aac6145a98bce480cd69d7d_og_working-at-the-frontier-how-balyasny-asset-management-evaluates-and-governs-claude-fable-5.jpg',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-307',
@@ -184,6 +199,8 @@ export const edicao20260921: Edicao = {
       prioridade: 'relevante',
       tipo: 'análise',
       tags: ['MCP', 'protocolo', 'ferramentas', 'APIs', 'agentes'],
+      imagem: 'https://maharship.com/og-image.png',
+      orientacaoImagem: 'horizontal',
     },
     {
       id: 'mat-309',
