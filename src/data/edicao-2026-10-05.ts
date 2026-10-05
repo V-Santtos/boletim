@@ -15,17 +15,17 @@ export const edicao20261005: Edicao = {
     'status.openai.com e status.claude.com — não verificados nesta edição.',
   ],
   notasRevisao: [
-    'Esta edição cobre duas semanas (22/09 a 05/10) por ser a primeira após a edição de 21/09.',
+    'Esta edição cobre a semana de 29/09 a 05/10. Matérias do período 22–28/09 que se sobrepõem à edição de 28/09 foram mantidas quando trazem informação complementar ou ângulo diferente.',
     'Onze das treze matérias foram escritas a partir de fontes primárias verificadas (Anthropic, Claude, Google DeepMind, Google Blog, Claude Platform).',
-    'A matéria sobre o OpenAI DevDay (mat-403) é a exceção principal: openai.com devolveu 403 e toda a cobertura foi feita por fontes secundárias. Os fatos estão marcados como não verificáveis diretamente.',
-    'A matéria sobre SynthID Bio (mat-409) tem data aproximada (setembro de 2026) porque o DeepMind Blog não exibe dia exato.',
-    'A matéria sobre Private AI Compute do Google (mat-413) também tem data aproximada pelo mesmo motivo.',
+    'A matéria sobre o OpenAI DevDay (mat-503) é a exceção principal: openai.com devolveu 403 e toda a cobertura foi feita por fontes secundárias. Os fatos estão marcados como não verificáveis diretamente.',
+    'A matéria sobre SynthID Bio (mat-509) tem data aproximada (setembro de 2026) porque o DeepMind Blog não exibe dia exato.',
+    'A matéria sobre Private AI Compute do Google (mat-513) também tem data aproximada pelo mesmo motivo.',
     'Sete matérias trazem og:image da fonte primária. Seis ficam sem imagem: DevDay (fonte bloqueada), Marketplace e Plugins (og:image é SVG genérico), NVIDIA Safety Platform (SVG), SynthID Bio (sem og:image editorial), Frontier Academy (sem og:image editorial) e as três matérias de changelog/explorar.',
-    'Esta edição usa mat-401 em diante para manter separação das faixas de ID anteriores.',
+    'Esta edição usa mat-501 em diante para manter separação da edição de 28/09 (mat-401) e das faixas anteriores.',
   ],
   materias: [
     {
-      id: 'mat-401',
+      id: 'mat-501',
       tituloPt: 'Claude Opus 5.5 iguala o Fable 5.1 por 40% menos e exige thinking ligado em toda chamada',
       tituloOriginal: 'Introducing Claude Opus 5.5',
       resumoCurto:
@@ -48,7 +48,7 @@ export const edicao20261005: Edicao = {
       orientacaoImagem: 'horizontal',
     },
     {
-      id: 'mat-402',
+      id: 'mat-502',
       tituloPt: 'Claude Sonnet 5.5 supera o Opus em coding agêntico e custa cinco vezes menos',
       tituloOriginal: 'Introducing Claude Sonnet 5.5',
       resumoCurto:
@@ -71,7 +71,7 @@ export const edicao20261005: Edicao = {
       orientacaoImagem: 'horizontal',
     },
     {
-      id: 'mat-403',
+      id: 'mat-503',
       tituloPt: 'OpenAI DevDay 2026: Dots, GPT-6.1 Sol e a virada para agentes persistentes',
       tituloOriginal: 'OpenAI DevDay 2026: Everything Announced',
       resumoCurto:
@@ -91,7 +91,7 @@ export const edicao20261005: Edicao = {
       tags: ['OpenAI', 'DevDay', 'Dots', 'GPT-6.1 Sol', 'agentes', 'Codex', 'Marketplace'],
     },
     {
-      id: 'mat-404',
+      id: 'mat-504',
       tituloPt: 'Gemini 4 Argon: modelo de fronteira do Google com 1 milhão de tokens de saída e foco em cyber',
       tituloOriginal: 'Gemini 4 Argon: our next era of frontier intelligence',
       resumoCurto:
@@ -114,7 +114,7 @@ export const edicao20261005: Edicao = {
       orientacaoImagem: 'horizontal',
     },
     {
-      id: 'mat-405',
+      id: 'mat-505',
       tituloPt: 'Claude Code ganha mods: funções TypeScript que reescrevem prompts, bloqueiam comandos e adicionam UI',
       tituloOriginal: 'Customize Claude Code with mods',
       resumoCurto:
@@ -137,7 +137,7 @@ export const edicao20261005: Edicao = {
       orientacaoImagem: 'horizontal',
     },
     {
-      id: 'mat-406',
+      id: 'mat-506',
       tituloPt: 'Claude Marketplace e o sistema de plugins unificam 2.000+ integrações em um só lugar',
       tituloOriginal: 'Claude Marketplace: one place to discover plugins, agents, and services from our partners / Build plugins for Claude',
       resumoCurto:
@@ -157,7 +157,7 @@ export const edicao20261005: Edicao = {
       tags: ['Claude', 'Marketplace', 'plugins', 'MCP 2.0', 'MCP Apps', 'ecossistema'],
     },
     {
-      id: 'mat-407',
+      id: 'mat-507',
       tituloPt: 'Anthropic e NVIDIA criam plataforma aberta de segurança para agentes com sandbox e prova de política',
       tituloOriginal: 'Giving companies more control over their AI agents, with NVIDIA',
       resumoCurto:
@@ -177,7 +177,7 @@ export const edicao20261005: Edicao = {
       tags: ['Anthropic', 'NVIDIA', 'OpenShell', 'segurança', 'agentes', 'credenciais', 'open source'],
     },
     {
-      id: 'mat-408',
+      id: 'mat-508',
       tituloPt: 'Claude descobre sistema enzimático inédito com repetições semelhantes ao CRISPR',
       tituloOriginal: 'Claude discovers a novel enzyme system with CRISPR-like repeats',
       resumoCurto:
@@ -200,7 +200,7 @@ export const edicao20261005: Edicao = {
       orientacaoImagem: 'horizontal',
     },
     {
-      id: 'mat-409',
+      id: 'mat-509',
       tituloPt: 'SynthID Bio: Google DeepMind marca d\'água em proteínas e estruturas 3D sem perder função biológica',
       tituloOriginal: 'Introducing SynthID Bio',
       resumoCurto:
@@ -221,7 +221,7 @@ export const edicao20261005: Edicao = {
       tags: ['Google DeepMind', 'SynthID', 'biologia sintética', 'marca d\'água', 'AlphaFold', 'open source'],
     },
     {
-      id: 'mat-410',
+      id: 'mat-510',
       tituloPt: 'Anthropic investe US$ 100 milhões para formar 10.000 engenheiros de fronteira até 2027',
       tituloOriginal: 'Anthropic invests $100 million to train 10,000 engineers and tackle the enterprise AI talent gap',
       resumoCurto:
@@ -241,7 +241,7 @@ export const edicao20261005: Edicao = {
       tags: ['Anthropic', 'Frontier Academy', 'formação', 'Enterprise', 'engenharia'],
     },
     {
-      id: 'mat-411',
+      id: 'mat-511',
       tituloPt: 'Claude Platform: Sonnet 4.5 será aposentado em novembro, billing de recusas muda e cache diagnostics sai do beta',
       tituloOriginal: 'Claude Platform Release Notes — September 23–30, 2026',
       resumoCurto:
@@ -261,7 +261,7 @@ export const edicao20261005: Edicao = {
       tags: ['Claude Platform', 'depreciação', 'Sonnet 4.5', 'billing', 'cache', 'thinking', 'migração'],
     },
     {
-      id: 'mat-412',
+      id: 'mat-512',
       tituloPt: 'Claude for Government chega à disponibilidade geral com FedRAMP High e Claude Code para o setor público',
       tituloOriginal: 'Claude for Government is now generally available',
       resumoCurto:
@@ -281,7 +281,7 @@ export const edicao20261005: Edicao = {
       tags: ['Claude', 'governo', 'FedRAMP', 'segurança', 'compliance', 'setor público'],
     },
     {
-      id: 'mat-413',
+      id: 'mat-513',
       tituloPt: 'Google avança em computação privada com memória segura no servidor e chaves que só existem no dispositivo',
       tituloOriginal: 'Advancing Private AI Compute with secure, server-side memory',
       resumoCurto:
