@@ -1,0 +1,4 @@
+# Imagens que o site devolve quando a página não tem arte própria: não são foto da matéria.
+# scripts/enriquecer_imagens.py ignora estas e acrescenta aqui as que detectar
+# (a mesma og:image vinda de páginas diferentes).
+https://www-cdn.anthropic.com/images/4zrzovbb/website/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg
