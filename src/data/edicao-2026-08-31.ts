@@ -242,6 +242,8 @@ export const edicao20260831: Edicao = {
       data: '26/08/2026',
       dataISO: '2026-08-26',
       linkOriginal: 'https://www.marktechpost.com/2026/08/28/glm-5-3-flash-vs-qwen3-8-flash-next-two-chinese-ai-labs-independently-converge-on-the-same-model-architecture/',
+      imagem: 'https://www.marktechpost.com/wp-content/uploads/2026/08/blog2200.png',
+      orientacaoImagem: 'horizontal',
       area: 'IA & Modelos',
       interesse: 'ambos',
       prioridade: 'relevante',

@@ -84,6 +84,8 @@ export const edicao20261005: Edicao = {
       data: '29/09/2026',
       dataISO: '2026-09-29',
       linkOriginal: 'https://openai.com/index/devday-2026/',
+      imagem: 'https://images.ctfassets.net/kftzwdyauwt9/6E6hS38rOnhhKPPmfUflDh/bbcf20b5fc6f99478187ec5dcbd491d1/DevDay_Blog_ArtCard_16x9.png?w=1600&h=900&fit=fill',
+      orientacaoImagem: 'horizontal',
       area: 'Ferramentas & Agents',
       interesse: 'ambos',
       prioridade: 'essencial',

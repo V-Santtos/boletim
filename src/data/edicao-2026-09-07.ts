@@ -353,6 +353,8 @@ export const edicao20260907: Edicao = {
       data: '12/08/2026',
       dataISO: '2026-08-12',
       linkOriginal: 'https://www.cnbc.com/2026/08/12/google-deepmind-koray-kavukcuoglu.html',
+      imagem: 'https://image.cnbcfm.com/api/v1/image/108338700-1784743358981-gettyimages-2276601971-GOOGLE_IO.jpeg?v=1784743385&w=1920&h=1080',
+      orientacaoImagem: 'horizontal',
       area: 'IA & Modelos',
       interesse: 'ambos',
       prioridade: 'explorar',

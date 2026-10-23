@@ -165,6 +165,8 @@ export const edicao20260928: Edicao = {
       data: '23/09/2026',
       dataISO: '2026-09-23',
       linkOriginal: 'https://openai.com/index/better-prompt-caching-for-gpt-6/',
+      imagem: 'https://images.ctfassets.net/kftzwdyauwt9/1GCXJNDUwggbqNGnGCATR3/7d3f2fc8ca3457597bcefc7fe30f5a64/7kneoqlc2qh37z1utkmtfk-seo-v1.png?w=1600&h=900&fit=fill',
+      orientacaoImagem: 'horizontal',
       area: 'Back-end',
       interesse: 'back-end',
       prioridade: 'relevante',
