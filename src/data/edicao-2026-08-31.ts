@@ -415,8 +415,6 @@ export const edicao20260831: Edicao = {
       data: '22/08/2026',
       dataISO: '2026-08-22',
       linkOriginal: 'https://blog.modelcontextprotocol.io/posts/mcp-roadmap/',
-      imagem: 'https://blog.modelcontextprotocol.io/og-image.png',
-      orientacaoImagem: 'horizontal',
       area: 'Ferramentas & Agents',
       interesse: 'ambos',
       prioridade: 'explorar',

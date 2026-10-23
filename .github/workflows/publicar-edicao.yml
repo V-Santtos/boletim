@@ -1,7 +1,8 @@
 name: Publicar edição do Attlas
 
 # A rotina semanal escreve a edição num branch claude/* e para ali. Este workflow leva a
-# edição até a main sem ninguém precisar mesclar o PR: mescla, valida, compila e dá push.
+# edição até a main sem ninguém precisar mesclar o PR: mescla, roda o pipeline da edição
+# (scripts/pipeline-edicao.sh: dados, fotos, build, visual) e dá push, já com as fotos.
 # A Vercel publica a partir da main. Se algo falhar, a main não muda e o job fica vermelho.
 #
 # - push num branch claude/*: publica a edição que acabou de chegar.
@@ -33,6 +34,20 @@ jobs:
         with:
           node-version: '20'
           cache: npm
+
+      # Etapa 2 do pipeline (fotos): busca e abre a og:image de cada matéria.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dependências das fotos
+        run: pip install --quiet requests beautifulsoup4 pillow
+
+      # Etapa 4 do pipeline (visual): Chromium fora do package.json, para não pesar na Vercel.
+      - name: Chromium para a validação visual
+        run: |
+          npm install --silent --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.56.1
+          npx --prefix "$RUNNER_TEMP/pw" playwright install --with-deps chromium
+          echo "NODE_PATH=$RUNNER_TEMP/pw/node_modules" >> "$GITHUB_ENV"
 
       - name: Publicar na main
         run: |
