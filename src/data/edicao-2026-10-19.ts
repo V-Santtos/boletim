@@ -4,7 +4,7 @@ export const edicao20261019: Edicao = {
   id: 'ed-2026-10-19',
   dataEdicao: '19 de outubro de 2026',
   dataISO: '2026-10-19',
-  periodoCobertura: { de: '2026-10-06', ate: '2026-10-19' },
+  periodoCobertura: { de: '2026-10-13', ate: '2026-10-19' },
   ultimaAtualizacao: '19/10/2026 às 14:00 UTC',
   fontesIndisponiveis: [
     'openai.com — Cloudflare continua devolvendo 403 ao sandbox. Nenhuma página do domínio principal pôde ser acessada nesta edição.',
@@ -15,40 +15,17 @@ export const edicao20261019: Edicao = {
     'status.openai.com e status.claude.com — não verificados nesta edição.',
   ],
   notasRevisao: [
-    'Esta edição cobre o período de 06/10 a 19/10/2026. A matéria do Haiku 5.5 (07/10) e do EmbeddingGemma 2 (06/10) estão no limite da janela da edição anterior (até 05/10) mas não foram cobertas por ela.',
-    'Todas as doze matérias foram escritas a partir de fontes primárias verificadas: Anthropic (anthropic.com, claude.com, claude.dev, platform.claude.com), Google (blog.google, deepmind.google, ai.google.dev) e Y Combinator (ycombinator.com).',
-    'Nenhuma matéria desta edição depende de fonte secundária. A OpenAI continua inacessível do sandbox, mas não houve lançamento relevante da OpenAI no período que exigisse cobertura por fonte alternativa.',
+    'Esta edição cobre a semana de 13/10 a 19/10/2026. Foi escrita sem a edição de 12/10 na main e repetia seis assuntos dela; a revisão de 23/10 tirou cinco matérias repetidas (Haiku 5.5, Cyber Mission, Dashboards e Motion, guia de automações com Managed Agents e política de uso) e reduziu as duas parciais ao que era novo.',
+    'A matéria do changelog da Claude Platform (mat-704) agora cobre só o que saiu em 15/10: fast mode do Opus 5.5 fora do preview, Models API e Compliance API. Cache do Sonnet 5.5 e workflows dinâmicos ficaram com a edição de 12/10.',
+    'Duas matérias são de 06/10, dentro da janela da edição anterior, mas ela não as cobriu: EmbeddingGemma 2 (mat-705) e Nano Banana 2.1 (mat-707). A mat-707 ficou só com o lançamento; as deprecações de Gemini Flash e Deep Research estão na edição de 12/10.',
+    'O Gemini 4 Argon em disponibilidade geral (mat-701) complementa a mat-504 da edição de 05/10, que cobriu o anúncio inicial do modelo em 30/09.',
+    'Todas as matérias foram escritas a partir de fontes primárias: Anthropic (anthropic.com, claude.com, platform.claude.com) e Google (blog.google, ai.google.dev). Release notes da Claude Platform e changelog da Gemini API conferidos de novo em 23/10.',
     'Nenhuma matéria traz imagem nesta edição: as og:image das fontes não puderam ser confirmadas a tempo, e a memória editorial proíbe incluir URL de imagem sem verificar que o arquivo abre.',
-    'A matéria sobre o Gemini 4 Argon GA (mat-602) complementa a mat-504 da edição anterior, que cobriu o anúncio inicial do modelo em 30/09. Esta cobre a disponibilidade geral em 13/10.',
-    'As matérias mat-609 (changelog da API) e mat-612 (deprecações Gemini) agrupam múltiplas alterações do período para evitar fragmentação.',
-    'Esta edição usa mat-601 em diante para manter separação da edição de 05/10 (mat-501) e das faixas anteriores.',
+    'IDs renumerados para mat-701 em diante: a versão original reusava mat-601 a mat-612, já ocupados pela edição de 12/10.',
   ],
   materias: [
     {
-      id: 'mat-601',
-      tituloPt: 'Claude Haiku 5.5 chega 75% mais barato que o antecessor e com esforço ajustável pela primeira vez',
-      tituloOriginal: 'Introducing Claude Haiku 5.5',
-      resumoCurto:
-        'A Anthropic lançou o Claude Haiku 5.5 em 7 de outubro: o modelo pequeno mais capaz e mais barato da empresa, com preço a partir de US$ 0,10/US$ 0,50 por milhão de tokens e o primeiro Haiku a permitir ajuste de esforço (Low a Max). O modelo tem breaking changes em relação ao Haiku 4.5 que exigem migração.',
-      analiseDetalhada:
-        'O Haiku 5.5 redefine a faixa de preço do modelo pequeno da Anthropic. Para prompts de até 100K tokens — o que cobre cerca de 90% das chamadas Haiku 4.5 segundo a Anthropic —, o input cai de US$ 1,00 para US$ 0,10 por milhão de tokens (redução de 90%) e o output de US$ 5,00 para US$ 0,50 (também 90%). Para prompts acima de 100K, os preços são US$ 0,50 input e US$ 2,50 output. O cache read, que domina o custo em sessões longas, fica em US$ 0,01 por milhão de tokens na faixa até 100K — cem vezes mais barato que o cache read do Haiku 4.5 (US$ 0,10). Na média ponderada, a Anthropic estima economia de 75% em relação ao Haiku 4.5.\n\nEm benchmarks, o salto é igualmente expressivo. No Terminal-Bench 4.0, o Haiku 4.5 marcava 0,0%; o Haiku 5.5 chega a 39,2%. No GDPval-AA v2.1, sai de 735 Elo para 1620 — mais que o dobro. No FrontierCode 1.1, alcança 46,4%, acima do GPT-6 Luna (42,4%). No OSWorld 2.1, marca 72,4% contra 15,7% do antecessor. No Humanity\'s Last Exam com ferramentas, chega a 57,4% — um número que seria fronteira há poucos meses.\n\nA novidade arquitetural mais relevante é o esforço ajustável: o Haiku 5.5 é o primeiro Haiku a aceitar os níveis Low, Med, High, Xhigh e Max, permitindo que o desenvolvedor troque custo por inteligência dentro do mesmo modelo. O adaptive thinking vem ligado por padrão, o que é uma das breaking changes em relação ao Haiku 4.5.\n\nAs breaking changes merecem atenção especial. Código escrito para o Haiku 4.5 pode falhar com erro 400 se usar budget_tokens, temperature/top_p/top_k junto com thinking, assistant prefill ou o tool computer_20250124. O thinking text é omitido por padrão — para recebê-lo, é preciso configurar thinking.display como "summarized". A Anthropic disponibilizou um guia de migração.\n\nResultados de clientes reforçam a tese: Asana reportou mais de 30% de redução em latência; HubSpot alcançou 92,8% no seu suite CRM; AlphaSense subiu de 0,76 para 0,84 em 400 queries; e a Cognition usou Haiku 5.5 como sidekick do Devin, atingindo 66,2 no FrontierCode.',
-      porQueImporta:
-        'Para os dois sócios, o Haiku 5.5 é o modelo que viabiliza o uso de IA em tarefas de alto volume onde o custo era proibitivo. A US$ 0,10 de input e US$ 0,01 de cache read, classificação, compactação de contexto, sumarização e subagentes ficam economicamente triviais. O modelo compete diretamente com o GPT-6 Luna em benchmarks de código e supera-o no FrontierCode, o que o torna candidato a subagente padrão em pipelines que usam Opus ou Sonnet como modelo principal.\n\nA exigência de migração é a ressalva prática: qualquer integração via API que use Haiku 4.5 precisa ser testada antes de trocar o model ID. Os erros 400 são silenciosos — o código compila, mas a chamada falha em runtime.',
-      fonte: 'Anthropic',
-      data: '07/10/2026',
-      dataISO: '2026-10-07',
-      linkOriginal: 'https://www.anthropic.com/claude-haiku-5-5',
-      area: 'IA & Modelos',
-      interesse: 'ambos',
-      prioridade: 'essencial',
-      tipo: 'lançamento',
-      tags: ['Claude', 'Haiku 5.5', 'modelo', 'preço', 'esforço ajustável', 'migração', 'breaking change'],
-      imagem:
-        'https://www-cdn.anthropic.com/images/4zrzovbb/website/89e9b0fbfe0181f6ca565d913686ce8e49b5e9c2-1200x630.jpg',
-      orientacaoImagem: 'horizontal',
-    },
-    {
-      id: 'mat-602',
+      id: 'mat-701',
       tituloPt: 'Gemini 4 Argon entra em disponibilidade geral para desenvolvedores e usuários do app',
       tituloOriginal: 'Gemini 4 Argon is now available',
       resumoCurto:
@@ -68,7 +45,7 @@ export const edicao20261019: Edicao = {
       tags: ['Google', 'Gemini', 'Argon', 'GA', 'Antigravity', 'coding agêntico', 'deprecação'],
     },
     {
-      id: 'mat-603',
+      id: 'mat-702',
       tituloPt: 'Code Review sai do preview: revisão automática de PRs disponível para Team e Enterprise',
       tituloOriginal: 'Code Review is now generally available',
       resumoCurto:
@@ -88,27 +65,7 @@ export const edicao20261019: Edicao = {
       tags: ['Claude', 'Code Review', 'GA', 'GitHub', 'revisão de código', 'automação', 'CLAUDE.md', 'REVIEW.md'],
     },
     {
-      id: 'mat-604',
-      tituloPt: 'Anthropic lança Cyber Mission com 11 parceiros e abre programa de verificação em três camadas',
-      tituloOriginal: 'Introducing the Anthropic Cyber Mission',
-      resumoCurto:
-        'A Anthropic anunciou a Cyber Mission em 8 de outubro, com dois pilares: o Critical Infrastructure Defense Program (CIDP) com 11 parceiros fundadores e o OSS Scanner para projetos open source. O Cyber Verification Program foi expandido para três tiers com acesso progressivo a capacidades cyber dos modelos Claude.',
-      analiseDetalhada:
-        'A Cyber Mission é uma iniciativa de longo prazo da Anthropic para direcionar modelos de fronteira à defesa de infraestrutura e software. O primeiro pilar, o Critical Infrastructure Defense Program (CIDP), foca em sistemas operacionais de redes elétricas, tratamento de água e transporte, além de sistemas governamentais. Entrega modelos Claude de fronteira, engenheiros on-site e pesquisa de ameaças, tudo via provedores de segurança parceiros. Os 11 parceiros fundadores incluem Accenture, Booz Allen, CrowdStrike, Deloitte, Dragos, Hitachi, Nozomi Networks, Palo Alto Networks, PwC e Rockwell Automation.\n\nO segundo pilar, o OSS Scanner, faz varreduras periódicas e gratuitas de projetos open source inscritos, usando os modelos mais fortes da Anthropic. Cada relatório traz prova de conceito, explicação e correção sugerida. A Anthropic estima taxa de verdadeiro-positivo acima de 90%, mas alerta que os relatórios são gerados por modelo sem revisão humana. Projetos que não conseguem acompanhar o volume de achados recebem divulgação coordenada com verificação humana. O programa é financiado pelo Defender Advantage Fund (0xDAF) e conta com apoio financeiro à Python Software Foundation, Alpha-Omega, OpenSSF e Apache Software Foundation.\n\nO Cyber Verification Program foi reestruturado em três tiers, absorvendo o Project Glasswing. O Defense Access é voltado para trabalho defensivo (SOC, resposta a incidentes, engenharia reversa de malware) e é aberto a times de segurança de qualquer tamanho, operadores de infraestrutura crítica, mantenedores open source e pesquisadores individuais com histórico de vulnerabilidades reportadas. O Red Team Access adiciona pentesting e red-teaming autorizados, mas restringe a organizações — indivíduos não são elegíveis. O Specialized Access tem os menores bloqueios cyber e é limitado a organizações verificadas que testam sistemas safety-critical como redes elétricas, telecomunicações e infraestrutura bancária, com revisão aprofundada envolvendo o governo americano.\n\nOs números do Project Glasswing são expressivos: parceiros encontraram pelo menos 129.000 vulnerabilidades verificadas de abril a julho de 2026, a varredura open source da Anthropic encontrou mais 5.500 de abril a outubro, e mais de 33.000 dessas são classificadas como críticas ou de alta severidade. A Anthropic estima que o impacto real seja pelo menos cinco vezes maior que esses números.',
-      porQueImporta:
-        'Para o sócio de back-end, o CVP expandido é diretamente relevante. O Defense Access — a primeira camada — já desbloqueia capacidades de análise de vulnerabilidades, resposta a incidentes e engenharia reversa que os modelos gerais bloqueiam. A aplicação é feita via portal.anthropic.com/programs/cvp e a promessa é revisão em poucos dias. Para o sócio de front-end, a implicação é indireta mas importante: o OSS Scanner pode varrer dependências e bibliotecas que vocês usam.\n\nO dado de 129.000 vulnerabilidades encontradas em quatro meses mostra que modelos de fronteira aplicados a segurança produzem resultados em escala que equipes humanas não conseguem replicar. Se vocês contribuem para open source ou mantêm dependências críticas, vale inscrever projetos no OSS Scanner.',
-      fonte: 'Anthropic',
-      data: '08/10/2026',
-      dataISO: '2026-10-08',
-      linkOriginal: 'https://www.anthropic.com/news/anthropic-cyber-mission',
-      area: 'Infra & Segurança',
-      interesse: 'ambos',
-      prioridade: 'essencial',
-      tipo: 'lançamento',
-      tags: ['Anthropic', 'Cyber Mission', 'CIDP', 'OSS Scanner', 'CVP', 'segurança', 'infraestrutura crítica', 'open source'],
-    },
-    {
-      id: 'mat-605',
+      id: 'mat-703',
       tituloPt: 'Anthropic abre observabilidade de agentes com OpenTelemetry para Managed Agents e API',
       tituloOriginal: 'Agent observability on the Claude Platform',
       resumoCurto:
@@ -128,47 +85,27 @@ export const edicao20261019: Edicao = {
       tags: ['Claude', 'OpenTelemetry', 'observabilidade', 'Managed Agents', 'tracing', 'produção'],
     },
     {
-      id: 'mat-606',
-      tituloPt: 'Claude ganha Dashboards ao vivo, Motion para animações e libera Docs, Slides e Design para todos',
-      tituloOriginal: 'Build live dashboards and animate explainers with Claude',
+      id: 'mat-704',
+      tituloPt: 'Fast mode do Claude Opus 5.5 sai do research preview e deixa de exigir header beta',
+      tituloOriginal: 'Claude Platform release notes — October 15, 2026',
       resumoCurto:
-        'A Anthropic lançou Claude Dashboards (beta) para visualização de dados em tempo real e Claude Motion (beta) para animações explicativas em vídeo. Docs, Slides e Design saíram de beta para todos os planos, incluindo o Free, com mais de 45 milhões de artefatos criados.',
+        'Em 15 de outubro, o fast mode do Claude Opus 5.5 saiu do research preview: não é mais preciso pedir acesso nem enviar o header fast-mode-2026-02-01, e os tiers Start, Build e Scale ganharam rate limit padrão para ele. No Opus 5 e no Opus 4.8, o fast mode continua em preview.',
       analiseDetalhada:
-        'O anúncio de 8 de outubro traz três movimentos em uma tacada. O Claude Dashboards, em beta para planos pagos, conecta-se a fontes de dados empresariais — Amazon Redshift, BigQuery, ClickHouse, Databricks, Snowflake e Salesforce — e transforma perguntas em dashboards que se atualizam conforme os dados mudam. Cada número pode ser clicado para ver a query subjacente, e Claude pode explicar qualquer métrica. Dashboards podem ser enviados para Amplitude, Grafana, Hex, Mixpanel, Omni, Perplexity, PostHog ou Sigma para análise mais profunda, com Databricks Genie, Looker, monday.com e Tableau chegando em breve.\n\nO Claude Motion, em beta para Team e Enterprise, cria explicadores animados curtos a partir de prompts — recaps de 30 segundos para all-hands, gráficos animados para board decks, walkthroughs de onboarding. A distinção técnica é importante: Motion não usa modelos de geração de vídeo, então não há footage gerada por IA nem pessoas sintéticas. É código que anima texto, gráficos, formas e imagens, editável word por word e exportável como MP4. O acesso é via /motion na caixa de mensagem.\n\nDocs, Slides e Design saíram de beta para todos os planos, incluindo o Free. Mais de 45 milhões de documentos, apresentações e designs foram criados no Claude desde o lançamento. Enterprise ganha suporte a CMEK em Artifacts e controle de quais templates a organização usa. Compartilhamento externo é configurável pelo admin, e exports para PowerPoint, PDF e Google Slides mantêm a formatação. Edição está disponível no app mobile.\n\nO Claude Design, que rodava em claude.ai/design como site standalone, está migrando para dentro das conversas do Claude. O site standalone permanece até 14 de dezembro. Design systems de time podem ser migrados pela página de Artifacts. Chats e comentários de projetos do standalone não migram e serão perdidos quando o site fechar.',
+        'O fast mode do Opus 5.5 deixou de ser experimental. Requests ao modelo não precisam mais do header fast-mode-2026-02-01, e quem ainda o envia continua funcionando: a remoção pode esperar. O acesso deixou de ser por pedido, e os tiers de uso Start, Build e Scale passaram a ter um rate limit padrão de fast mode para o Opus 5.5. O mesmo fast mode chegou ao Claude in Microsoft Foundry, para deployments hospedados na Azure.\n\nA mudança vale só para o Opus 5.5. Para o Claude Opus 5 e o Claude Opus 4.8, o fast mode segue em research preview, e o header beta continua obrigatório.\n\nNo mesmo dia, a Models API ganhou o campo capabilities.thinking.types.between_tools: GET /v1/models e GET /v1/models/{model_id} passam a informar se cada modelo aceita thinking: {type: "between_tools"}, modo que desliga o raciocínio antes da primeira resposta. E a Compliance API, em beta para organizações Claude Enterprise, passou a devolver o texto que cada membro salvou como instruções para o Claude no claude.ai e como instruções globais no Cowork, pelo endpoint GET /v1/compliance/organizations/{org_uuid}/user_preferences com o escopo read:compliance_user_data.\n\nO corte de 50% no cache read do Sonnet 5.5 e os workflows dinâmicos para Managed Agents, também desse changelog, saíram na edição de 12/10.',
       porQueImporta:
-        'Para o sócio de front-end, a saída de beta de Docs, Slides e Design para o plano Free significa que qualquer membro da equipe pode criar artefatos visuais sem barreira de custo. A migração do Design para dentro do Claude é uma mudança de fluxo: quem usa design systems no standalone precisa migrar antes de 14 de dezembro.\n\nPara o sócio de back-end, o Dashboards é a funcionalidade mais relevante. Conectar BigQuery ou Snowflake e ter um dashboard exploratório em linguagem natural economiza o ciclo de escrever SQL, montar Metabase e iterar. O Motion é útil para comunicação interna — apresentar métricas ou mudanças em formato animado para stakeholders que não vão ler um documento técnico.',
-      fonte: 'Anthropic',
-      data: '08/10/2026',
-      dataISO: '2026-10-08',
-      linkOriginal: 'https://claude.com/resources/articles/dashboards-and-motion',
-      area: 'Ferramentas & Agents',
-      interesse: 'ambos',
-      prioridade: 'relevante',
-      tipo: 'lançamento',
-      tags: ['Claude', 'Dashboards', 'Motion', 'Docs', 'Slides', 'Design', 'Artifacts', 'beta'],
-    },
-    {
-      id: 'mat-607',
-      tituloPt: 'Guia de referência para automações com Managed Agents: bookmarks, vaults e seis regras de robustez',
-      tituloOriginal: 'Building effective agent automations',
-      resumoCurto:
-        'A Anthropic publicou uma implementação de referência para agentes automatizados e agendados com Managed Agents. O artigo documenta a arquitetura de seis componentes (sources, destination, agent, schedule, memory e guardrails) e seis regras para evitar falhas comuns em agentes recorrentes.',
-      analiseDetalhada:
-        'O artigo de Lance Martin e CJ Avilla, publicado em 8 de outubro, é o primeiro guia completo da Anthropic para automações com Managed Agents. A implementação de referência é um agente que roda em schedule, lê Slack e GitHub, detecta mudanças desde a última execução e posta um resumo no Slack. O agente roda na infraestrutura da Anthropic — nada precisa ficar rodando localmente.\n\nA arquitetura tem seis componentes. Sources são fontes read-only (canais Slack, PRs do GitHub). Destination é onde o agente escreve (um canal Slack). Agent define modelo, ferramentas e passos em agent.md com frontmatter YAML. Schedule é o deployment com cron, timezone, budget e mensagem inicial. Memory divide-se em preferences (read-only para o agente, editável pelo usuário) e state (read-write do agente: bookmarks, ledger, notas). Guardrails incluem acesso read-only e spending cap por execução.\n\nCredenciais vivem em vault e nunca entram no sandbox: MCP servers acessam via proxy externo, e tokens de shell são swapped pela plataforma apenas para hosts permitidos. O spending cap é definido em centavos (ex: "500" = US$ 5,00) e pausa o agente com stop reason budget_reached em vez de falhar.\n\nAs seis regras são: (1) ler cada fonte a partir de um bookmark, não de janela fixa de tempo; (2) reportar falha de leitura como indisponível, nunca como dia tranquilo; (3) re-verificar cada item antes de postar; (4) contar post como enviado somente quando Slack confirma com ok: true e ts; (5) re-ler preferences a cada execução, nunca embutir cópia no prompt; (6) usar acesso read-only onde o agente só lê e limitar o gasto por execução.\n\nO artigo também documenta os modos de falha mais comuns: perda silenciosa de fonte (MCP down, o agente diz "nada novo"), itens perdidos por janela fixa, posts duplicados, drift de ledger/bookmark, status obsoleto, datas erradas por timezone do servidor, preferências ignoradas e brief que fica mudo por cap muito baixo.',
-      porQueImporta:
-        'Para o sócio de back-end, este guia é o manual para colocar agentes Claude em produção como automações recorrentes. As seis regras parecem óbvias, mas cada uma resolve uma falha real — especialmente a regra de bookmarks em vez de janela fixa e a de confirmar o post antes de atualizar estado. O padrão de vault credentials com proxy externo é a forma correta de dar acesso a APIs sem expor tokens ao sandbox.\n\nO setup via /claude-api managed-agents-onboard no Claude Code automatiza a criação dos recursos. Para quem já usa Managed Agents ou planeja adotar, este artigo substitui tentativa e erro por um blueprint testado.',
-      fonte: 'Anthropic',
-      data: '08/10/2026',
-      dataISO: '2026-10-08',
-      linkOriginal: 'https://claude.dev/blog/building-effective-agent-automations/',
-      area: 'Ferramentas & Agents',
+        'Para o sócio de back-end, o fast mode do Opus 5.5 vira uma opção de produção, com rate limit previsível, e não mais um recurso que dependia de liberação. Fluxos sensíveis a latência que usam o Opus 5.5 podem adotá-lo sem pedir acesso; o header pode sair do código na próxima limpeza, sem pressa. Quem usa Opus 5 ou Opus 4.8 deve manter o header.\n\nO campo between_tools na Models API permite checar a capacidade do modelo em tempo de execução, em vez de fixar no código quais modelos aceitam esse modo de thinking.',
+      fonte: 'Claude Platform',
+      data: '15/10/2026',
+      dataISO: '2026-10-15',
+      linkOriginal: 'https://platform.claude.com/docs/en/release-notes/overview',
+      area: 'Back-end',
       interesse: 'back-end',
       prioridade: 'relevante',
-      tipo: 'artigo técnico',
-      tags: ['Claude', 'Managed Agents', 'automação', 'scheduling', 'vault', 'bookmarks', 'boas práticas'],
+      tipo: 'changelog',
+      tags: ['Claude', 'Opus 5.5', 'fast mode', 'API', 'Models API', 'Compliance API', 'changelog'],
     },
     {
-      id: 'mat-608',
+      id: 'mat-705',
       tituloPt: 'EmbeddingGemma 2: modelo aberto de 740M parâmetros leva embeddings multimodais ao dispositivo',
       tituloOriginal: 'EmbeddingGemma 2: an open, lightweight multimodal embedding model',
       resumoCurto:
@@ -188,47 +125,7 @@ export const edicao20261019: Edicao = {
       tags: ['Google', 'EmbeddingGemma', 'embedding', 'multimodal', 'open source', 'on-device', 'RAG'],
     },
     {
-      id: 'mat-609',
-      tituloPt: 'Cache do Sonnet 5.5 cai pela metade e API Claude ganha workflows dinâmicos, fast mode GA e créditos mensais',
-      tituloOriginal: 'Claude Platform release notes — October 2026',
-      resumoCurto:
-        'O changelog da plataforma Claude em outubro traz o corte de 50% no cache read do Sonnet 5.5 (de US$ 0,20 para US$ 0,10/M), dynamic workflows para Managed Agents em beta, fast mode do Opus 5.5 saindo de research preview e créditos mensais de API para planos Max e Team.',
-      analiseDetalhada:
-        'O changelog de outubro da Claude Platform concentra mudanças que afetam custo, velocidade e capacidade de agentes. A mais impactante é o corte no cache read do Sonnet 5.5, de US$ 0,20 para US$ 0,10 por milhão de tokens — uma redução de 50%. Em workloads agênticos, onde o ratio de input para output é alto e cache domina o custo, a Anthropic estima economia de cerca de 20% no custo total de uso.\n\nEm 9 de outubro, dynamic workflows para Managed Agents entraram em beta. A funcionalidade permite que agentes escrevam workflows que orquestram múltiplos agentes em fases, rodando em background. A ativação requer o header managed-agents-2026-04-01 e configuração de multiagent com workflows enabled. O progresso é acompanhado via eventos workflow_run.* no event stream da sessão.\n\nEm 15 de outubro, o fast mode do Opus 5.5 saiu de research preview: o header fast-mode-2026-02-01 não é mais necessário (embora requests que o enviem continuem funcionando). Os tiers Start, Build e Scale ganharam rate limits padrão para fast mode do Opus 5.5. Opus 5 e 4.8 permanecem em research preview.\n\nOutras mudanças notáveis: planos Max 5x recebem US$ 100/mês em créditos de API, Max 20x US$ 200/mês e Team até US$ 500 pooled. As SDKs Python e TypeScript ganharam classes beta para browser use e computer use com subclassing. A Compliance API passou a retornar chats da experiência unificada Claude e suporta export de Claude Docs como Word. O networking de Managed Agents com modo limited agora governa também web_fetch e web_search, e web_fetch só acessa URLs que já apareceram no contexto da sessão.\n\nEm 7 de outubro, o Haiku 5.5 trouxe breaking changes que merecem atenção de migração: código do Haiku 4.5 que usa budget_tokens, temperature/top_p/top_k, assistant prefill ou computer_20250124 pode falhar com 400. O adaptive thinking vem ligado por padrão e o thinking text é omitido a menos que thinking.display seja configurado como "summarized".',
-      porQueImporta:
-        'Para os sócios que usam a API Claude, o cache read do Sonnet 5.5 a US$ 0,10/M é a mudança de custo mais relevante. Combinado com o Haiku 5.5 a US$ 0,01/M de cache read, a Anthropic achatou dramaticamente o custo de sessões longas de agente. Para quem roda Claude Code em sessões extensas, o impacto é imediato.\n\nOs dynamic workflows para Managed Agents são a evolução natural para quem precisa orquestrar múltiplos agentes — pipelines de review, verificação paralela, análise em fases. O fast mode GA do Opus 5.5 simplifica integrações que dependiam do header experimental. Os créditos mensais de API para Max e Team reduzem a barreira para experimentar a API sem comprometimento com um plano Scale.',
-      fonte: 'Anthropic',
-      data: '07/10/2026',
-      dataISO: '2026-10-07',
-      linkOriginal: 'https://platform.claude.com/docs/en/release-notes/overview',
-      area: 'Back-end',
-      interesse: 'back-end',
-      prioridade: 'relevante',
-      tipo: 'changelog',
-      tags: ['Claude', 'API', 'cache', 'Sonnet 5.5', 'dynamic workflows', 'fast mode', 'Opus 5.5', 'créditos'],
-    },
-    {
-      id: 'mat-610',
-      tituloPt: 'Anthropic atualiza política de uso: seção de atividade enganosa, regras para hardware autônomo e proteção contra abuso ao modelo',
-      tituloOriginal: '2026 Usage Policy update',
-      resumoCurto:
-        'A atualização da Usage Policy da Anthropic, efetiva em 12 de novembro, consolida regras contra atividades enganosas em uma nova seção, remove a proibição genérica de targeting personalizado em eleições (mantendo a proibição de targeting enganoso), e adiciona requisitos para hardware autônomo e proibição de abuso persistente ao modelo.',
-      analiseDetalhada:
-        'A atualização publicada em 8 de outubro entra em vigor em 12 de novembro de 2026. A maioria das mudanças, segundo a Anthropic, clarifica regras existentes e adiciona exemplos para o trabalho mais longo e independente dos modelos.\n\nA nova seção "Do Not Engage in Deceptive Campaigns or Artificial Activity" consolida regras que estavam espalhadas pelas seções de eleições, fraude, privacidade e desinformação. A unificação cobre atividade enganosa de qualquer natureza, política ou comercial, e proíbe esconder autoria, amplificar conteúdo via contas falsas e construir infraestrutura para campanhas de influência.\n\nNa seção de eleições, renomeada para "Do Not Undermine Democratic Processes", a mudança mais significativa é a remoção da proibição genérica de targeting personalizado de voto e campanha. A Anthropic reconhece que a proibição bloqueava trabalho cívico legítimo, como informações multilíngues para eleitores e avisos eleitorais oficiais. Targeting que dependa de engano ou uso indevido de dados pessoais continua proibido sob outras seções.\n\nA seção de armas passa a cobrir explicitamente software e componentes que fazem armas funcionar, além de armamento de drones e veículos autônomos. Para hardware autônomo, a nova regra exige que um operador qualificado possa observar e parar o equipamento, e que o equipamento mantenha estado seguro se desconectado de Claude — vinculado ao Model Hardware Standard da Anthropic.\n\nA proibição de abuso persistente ao modelo é inédita: comportamento cruel e repetido sem propósito discernível para com Claude agora é proibido. A regra se aplica apenas em casos extremos e exclui frustração comum, resistência, temas criativos sombrios e pesquisa/testes de modelo. O mecanismo primário de enforcement é a capacidade do Claude de encerrar conversas persistentemente abusivas.\n\nA seção de uso de alto risco agora exige humano no loop com autoridade para revisar e alterar recomendações de Claude em decisões que afetam saúde, direitos legais, finanças, sustento ou acesso a serviços essenciais, e que indivíduos afetados sejam informados de que IA foi usada.',
-      porQueImporta:
-        'Para os sócios, o impacto prático é limitado — as mudanças focam em cenários de uso empresarial e institucional. Mas três pontos merecem atenção. A regra de hardware autônomo é relevante se vocês trabalharem com IoT ou automação física: a exigência de safe state on disconnect e operador que possa parar o equipamento define um padrão mínimo para qualquer integração de Claude com hardware. A seção de high-risk use obriga humano no loop para recomendações que afetem finanças e direitos — relevante para qualquer produto com decisões automatizadas. E a remoção do bloqueio genérico de targeting em eleições desbloqueia aplicações cívicas legítimas que antes eram indistinguíveis de manipulação.',
-      fonte: 'Anthropic',
-      data: '08/10/2026',
-      dataISO: '2026-10-08',
-      linkOriginal: 'https://www.anthropic.com/news/2026-usage-policy-update',
-      area: 'IA & Modelos',
-      interesse: 'ambos',
-      prioridade: 'explorar',
-      tipo: 'análise',
-      tags: ['Anthropic', 'política de uso', 'regulação', 'atividade enganosa', 'hardware', 'abuso', 'eleições'],
-    },
-    {
-      id: 'mat-611',
+      id: 'mat-706',
       tituloPt: 'Anthropic cria fundo de benefício público com 5% das ações e escalator vinculado à valorização',
       tituloOriginal: 'Investing in the public benefit',
       resumoCurto:
@@ -248,16 +145,16 @@ export const edicao20261019: Edicao = {
       tags: ['Anthropic', 'benefício público', 'equity', 'governança', 'mercado de trabalho'],
     },
     {
-      id: 'mat-612',
-      tituloPt: 'Gemini Nano Banana 2.1 alcança GA e Google depreca Flash 3.5, 3.7 e Deep Research legacy',
-      tituloOriginal: 'Gemini API changelog — October 2026',
+      id: 'mat-707',
+      tituloPt: 'Gemini Nano Banana 2.1 chega à disponibilidade geral com proporções panorâmicas até 4K',
+      tituloOriginal: 'Gemini Nano Banana 2.1 generally available (GA)',
       resumoCurto:
-        'O changelog da Gemini API de outubro registra o GA do Gemini Nano Banana 2.1 para geração de imagens com razões panorâmicas em até 4K, além da depreciação do Gemini 3.7 Flash, 3.5 Flash e do Deep Research preview legacy, com desligamento marcado para 23 de outubro.',
+        'Desde 6 de outubro, o Gemini Nano Banana 2.1 (gemini-nano-banana-2.1) está em disponibilidade geral na Gemini API. O modelo de geração e edição de imagens mantém velocidade e custo de nível Flash, melhora renderização de texto e consistência de personagem, e gera proporções panorâmicas de 1:4 a 8:1 em 1K, 2K e 4K.',
       analiseDetalhada:
-        'O Gemini Nano Banana 2.1, que alcançou disponibilidade geral em 6 de outubro, é uma atualização do Nano Banana 2 focada em geração de imagens. As melhorias incluem qualidade visual superior, melhor aderência ao prompt, consistência de personagem em multi-turn e renderização de texto. A novidade mais expressiva são as razões panorâmicas: 1:4, 4:1, 1:8 e 8:1, disponíveis em resoluções de 1K, 2K e 4K. O modelo mantém velocidade e custo comparáveis ao Flash.\n\nAs depreciações são mais impactantes para desenvolvedores. O Gemini 3.7 Flash foi redirecionado automaticamente para o Gemini 3.8 Flash — requests que usam o model ID gemini-3.7-flash continuam funcionando, mas são servidos pelo 3.8. O mesmo acontece com o 3.5 Flash, redirecionado para o 3.6 Flash. Desenvolvedores devem atualizar o model string para evitar surpresas quando o redirect for eventualmente removido.\n\nO Deep Research deep-research-pro-preview-12-2025 tem desligamento marcado para 23 de outubro de 2026. A migração vai para deep-research-preview-04-2026 (mais rápido, adequado para streaming em UI) ou deep-research-max-preview-04-2026 (máxima abrangência). A mudança é no parâmetro agent dentro de interactions.create.\n\nO gemini-3.1-flash-image também teve depreciação anunciada, sem data de desligamento definida, com migração recomendada para gemini-nano-banana-2.1.',
+        'O Gemini Nano Banana 2.1 é a atualização do Nano Banana 2 (gemini-3.1-flash-image), modelo de geração e edição conversacional de imagens. O Google anuncia melhorias em qualidade visual, aderência ao prompt, consistência de personagem ao longo de vários turnos e renderização de texto, mantendo velocidade e custo de nível Flash.\n\nA novidade mais concreta são as proporções largas e panorâmicas: 1:4, 4:1, 1:8 e 8:1, nas resoluções 1K, 2K e 4K.\n\nJunto com o lançamento, o gemini-3.1-flash-image foi declarado obsoleto, ainda sem data de desligamento; a migração recomendada é para o gemini-nano-banana-2.1. As outras deprecações do mesmo changelog (Gemini 3.7 Flash, 3.5 Flash e o Deep Research de dezembro de 2025) saíram na edição de 12/10.',
       porQueImporta:
-        'Para o sócio de front-end, o Nano Banana 2.1 com razões panorâmicas é relevante para geração de imagens em interfaces: banners, headers e assets visuais em proporções não-padrão. A qualidade de renderização de texto em imagens geradas é uma melhoria que viabiliza uso editorial.\n\nPara ambos, as depreciações exigem ação se há código apontando para gemini-3.7-flash, gemini-3.5-flash ou o Deep Research legacy. O redirect automático mascara o problema no curto prazo, mas é uma dívida técnica que pode quebrar quando os redirects forem removidos. O prazo do Deep Research é apertado: 23 de outubro, menos de duas semanas após o anúncio.',
-      fonte: 'Google',
+        'Para o sócio de front-end, as proporções panorâmicas e a melhor renderização de texto abrem uso em banners, cabeçalhos e peças em formatos fora do padrão, onde modelos de imagem costumavam falhar.\n\nPara quem já chama o gemini-3.1-flash-image, a troca do model string é o passo a planejar: ainda não há data de desligamento, mas a deprecação já está anunciada.',
+      fonte: 'Google / Gemini API',
       data: '06/10/2026',
       dataISO: '2026-10-06',
       linkOriginal: 'https://ai.google.dev/gemini-api/docs/changelog',
@@ -265,7 +162,7 @@ export const edicao20261019: Edicao = {
       interesse: 'front-end',
       prioridade: 'explorar',
       tipo: 'changelog',
-      tags: ['Google', 'Gemini', 'Nano Banana', 'geração de imagens', 'deprecação', 'Flash', 'Deep Research'],
+      tags: ['Google', 'Gemini', 'Nano Banana', 'geração de imagens', 'deprecação'],
     },
   ],
 };

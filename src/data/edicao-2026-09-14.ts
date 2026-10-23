@@ -14,6 +14,7 @@ export const edicao20260914: Edicao = {
     'Fontes primárias (openai.com, claude.com, anthropic.com, blog.google, deepmind.google, ai.google.dev, sequoiacap.com, a16z.com) — bloqueadas por política de rede; conteúdo reconstruído via buscas em fontes secundárias confiáveis',
   ],
   notasRevisao: [
+    'IDs renumerados em 23/10 de mat-101–122 para mat-151–172: a faixa mat-101 já era da edição de 07/09, e a colisão fazia a navegação do arquivo abrir a matéria errada.',
     'Fetch direto às fontes primárias bloqueado por política de rede. Conteúdo reconstruído via WebSearch em fontes secundárias confiáveis e verificado cruzando múltiplas referências.',
     'Perfis de X/Twitter não puderam ser acessados. Conteúdo dessas fontes foi omitido em vez de inventado.',
     'Datas e preços foram verificados em pelo menos duas fontes independentes.',
@@ -21,7 +22,7 @@ export const edicao20260914: Edicao = {
   ],
   materias: [
     {
-      id: 'mat-101',
+      id: 'mat-151',
       tituloPt: 'GPT-6 Astra é lançado: o modelo mais capaz da OpenAI atinge nível "Critical" em cibersegurança',
       tituloOriginal: 'Path to Astra: critical capabilities and frontier safeguards',
       resumoCurto: 'A OpenAI lançou o GPT-6 Astra em 3 de setembro com capacidades state-of-the-art em computer use, código, ciência e cibersegurança — o primeiro modelo a atingir o limiar "Critical" do Preparedness Framework.',
@@ -40,7 +41,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'GPT-6 Astra', 'computer use', 'cibersegurança', 'modelo frontier'],
     },
     {
-      id: 'mat-102',
+      id: 'mat-152',
       tituloPt: 'Claude Fable 5.1 chega com cache 75% mais barato e modelo Mythos restrito',
       tituloOriginal: 'Anthropic Launches Claude Fable 5.1 With Lower Costs and Fewer False Positives',
       resumoCurto: 'Anthropic lançou o Fable 5.1 em 1º de setembro: mesma faixa de preço do Fable 5, mas com cache-read a US$0,25/M tokens (queda de 75%) e performance superior em effort alto. Mythos 5.1 é a variante restrita.',
@@ -59,7 +60,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude', 'Fable 5.1', 'Mythos 5.1', 'cache', 'pricing', 'Claude Code'],
     },
     {
-      id: 'mat-103',
+      id: 'mat-153',
       tituloPt: 'OpenAI lança Agents API em beta público: o harness do Codex acessível por uma chamada',
       tituloOriginal: 'Introducing the Agents API',
       resumoCurto: 'A Agents API permite construir agentes cloud-hosted com o harness do Codex, usando o modelo que quiser, com sandboxes gerenciadas — sem taxa de plataforma adicional.',
@@ -78,7 +79,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'Agents API', 'Codex', 'cloud agents', 'MCP', 'sandbox'],
     },
     {
-      id: 'mat-104',
+      id: 'mat-154',
       tituloPt: 'Anthropic lança Commerce Agents: blueprints open-source para agentes de compra e operação',
       tituloOriginal: 'Building Commerce Agents with Claude',
       resumoCurto: 'Blueprints Apache-2.0 para shopper agents e merchant agents, com verticais para retail, travel, telecom e entretenimento. Parceria com Shopify, Visa, Mastercard e Accenture.',
@@ -95,7 +96,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude', 'commerce agents', 'Shopify', 'open-source', 'e-commerce', 'blueprint'],
     },
     {
-      id: 'mat-105',
+      id: 'mat-155',
       tituloPt: 'OpenAI afirma ter resolvido o problema de Navier-Stokes com 10.000 agentes em 88 horas',
       tituloOriginal: 'On the Navier–Stokes Millennium Prize Problem',
       resumoCurto: 'Um modelo interno da OpenAI propôs solução para o problema Navier-Stokes (um dos sete Millennium Prize Problems de US$1M), usando ~10.000 agentes concorrentes. A conquista está envolta em controvérsia sobre crédito.',
@@ -114,7 +115,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'Navier-Stokes', 'Millennium Prize', 'agentes', 'matemática', 'controvérsia'],
     },
     {
-      id: 'mat-106',
+      id: 'mat-156',
       tituloPt: 'Cognition (Devin) levanta US$2 bilhões a US$48 bilhões de valuation com a16z e Accel',
       tituloOriginal: 'Cognition hits $48B valuation, signaling investors believe AI coding is far from a winner-take-all market',
       resumoCurto: 'O agente de código autônomo Devin da Cognition fechou Series E de US$2B, quase dobrando o valuation em 3 meses, com receita anualizada perto de US$900M.',
@@ -133,7 +134,7 @@ export const edicao20260914: Edicao = {
       tags: ['Cognition', 'Devin', 'a16z', 'coding agents', 'investimento', 'Series E'],
     },
     {
-      id: 'mat-107',
+      id: 'mat-157',
       tituloPt: 'GPT-Live-1: voz full-duplex na API a US$0,05/minuto',
       tituloOriginal: 'Build more natural voice experiences with GPT-Live-1 in the API',
       resumoCurto: 'Novo modelo de voz separa a camada conversacional do backend de raciocínio, com 30 pontos acima do Realtime-2.1 em Full Duplex Bench e 12 vozes disponíveis.',
@@ -152,7 +153,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'GPT-Live-1', 'voz', 'full-duplex', 'API', 'real-time'],
     },
     {
-      id: 'mat-108',
+      id: 'mat-158',
       tituloPt: 'Preço do Claude Sonnet 5 é congelado: aumento de setembro cancelado permanentemente',
       tituloOriginal: 'Claude Sonnet 5 introductory pricing is now the standard price',
       resumoCurto: 'O preço introdutório de US$2/US$10 por milhão de tokens do Sonnet 5 agora é permanente. O aumento previsto para 1º de setembro (US$3/US$15) foi cancelado.',
@@ -171,7 +172,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude', 'Sonnet 5', 'pricing', 'custo', 'API'],
     },
     {
-      id: 'mat-109',
+      id: 'mat-159',
       tituloPt: 'Claude Code ganha plugin eval, troca de output-style e Fable 5.1 como default',
       tituloOriginal: 'Claude Code v2.1.257 through v2.1.270',
       resumoCurto: 'Três releases em setembro trouxeram: Fable 5.1 como modelo default, claude plugin eval para testes reproduzíveis de plugins, /output-style para customizar respostas, e diffs no resultado do Bash.',
@@ -190,7 +191,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude Code', 'plugin eval', 'output-style', 'Fable 5.1', 'changelog'],
     },
     {
-      id: 'mat-110',
+      id: 'mat-160',
       tituloPt: 'OpenAI DevDay 2026 confirmado para 29 de setembro em San Francisco',
       tituloOriginal: 'Announcing OpenAI DevDay 2026',
       resumoCurto: 'A conferência anual de desenvolvedores da OpenAI acontece em 29/09 no Fort Mason Center, com keynote ao vivo, sessões técnicas e workshops. Haverá transmissão gratuita do keynote.',
@@ -210,7 +211,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'DevDay', 'conferência', 'São Paulo', 'desenvolvedores'],
     },
     {
-      id: 'mat-111',
+      id: 'mat-161',
       tituloPt: 'ChatGPT for Financial Services: IA com dados financeiros integrados para Wall Street',
       tituloOriginal: 'Introducing ChatGPT for Financial Services',
       resumoCurto: 'Produto vertical que combina GPT-6 Astra com dados de Daloopa, PitchBook e LSEG News para pesquisa, modelagem e pitchbooks. Desenhado com Morgan Stanley e Evercore.',
@@ -229,7 +230,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'ChatGPT', 'financial services', 'vertical', 'GPT-6 Astra'],
     },
     {
-      id: 'mat-112',
+      id: 'mat-162',
       tituloPt: 'Gemini Omni Flash entra em disponibilidade geral com geração e edição de vídeo',
       tituloOriginal: 'Gemini Omni Flash generally available',
       resumoCurto: 'Modelo de geração e edição de vídeo conversacional do Google sai de preview para GA. Suporta extensão de vídeo, interpolação e resoluções até 4K. Preview antigo será aposentado em 30/09.',
@@ -248,7 +249,7 @@ export const edicao20260914: Edicao = {
       tags: ['Google', 'Gemini Omni Flash', 'vídeo', 'geração', 'GA', 'depreciação'],
     },
     {
-      id: 'mat-113',
+      id: 'mat-163',
       tituloPt: 'Andrej Karpathy na Sequoia Ascent: "Engenharia agêntica é uma disciplina, não vibe coding"',
       tituloOriginal: 'Andrej Karpathy fireside chat at Sequoia Ascent 2026',
       resumoCurto: 'Na Sequoia Ascent, Karpathy descreveu a transição para Software 3.0 (programado via prompts, agentes e ferramentas) e definiu engenharia agêntica como disciplina profissional acima do vibe coding.',
@@ -266,7 +267,7 @@ export const edicao20260914: Edicao = {
       tags: ['Karpathy', 'Sequoia', 'engenharia agêntica', 'Software 3.0', 'vibe coding'],
     },
     {
-      id: 'mat-114',
+      id: 'mat-164',
       tituloPt: 'Gimlet Labs levanta US$300M para inferência multi-silicon: a16z lidera',
       tituloOriginal: 'Investing in Gimlet',
       resumoCurto: 'A Gimlet Labs, que orquestra inferência de IA entre aceleradores de diferentes fabricantes, fechou Series B de US$300M a US$3B de valuation liderada pela a16z, com Arm e Microsoft como novos investidores.',
@@ -285,7 +286,7 @@ export const edicao20260914: Edicao = {
       tags: ['a16z', 'Gimlet Labs', 'inferência', 'multi-silicon', 'infraestrutura'],
     },
     {
-      id: 'mat-115',
+      id: 'mat-165',
       tituloPt: 'a16z investe na Lightfield: CRM para a era agêntica',
       tituloOriginal: 'Investing in Lightfield',
       resumoCurto: 'CRM com modelo de dados flexível que se autoconstrói a partir de emails e chamadas. Projetado para fluxos de trabalho com agentes de IA, não para entrada manual.',
@@ -304,7 +305,7 @@ export const edicao20260914: Edicao = {
       tags: ['a16z', 'Lightfield', 'CRM', 'agentes', 'investimento'],
     },
     {
-      id: 'mat-116',
+      id: 'mat-166',
       tituloPt: 'Sora 2 e Videos API da OpenAI serão removidos em 24 de setembro — sem substituto oficial',
       tituloOriginal: 'Sora 2 and Videos API deprecation — September 24, 2026',
       resumoCurto: 'A OpenAI depreciará o Sora 2 e a Videos API em 24/09/2026. Diferente de outras depreciações, não há modelo substituto recomendado.',
@@ -323,7 +324,7 @@ export const edicao20260914: Edicao = {
       tags: ['OpenAI', 'Sora 2', 'Videos API', 'depreciação', 'migração'],
     },
     {
-      id: 'mat-117',
+      id: 'mat-167',
       tituloPt: 'Claude API ganha header de workspace e budgets de sessão para Managed Agents',
       tituloOriginal: 'anthropic-workspace-id response header and session budgets for Managed Agents',
       resumoCurto: 'Novo header de resposta identifica o workspace de cada requisição. Managed Agents ganha budgets por sessão e restrição de domínios em web_search.',
@@ -343,7 +344,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude', 'API', 'workspace', 'Managed Agents', 'budgets', 'segurança'],
     },
     {
-      id: 'mat-118',
+      id: 'mat-168',
       tituloPt: 'TypeScript 7.0 em Go se aproxima: a reescrita que promete compilação 10x mais rápida',
       tituloOriginal: 'TypeScript 6.0 is the final JS release before the Go rewrite ships as TS 7.0',
       resumoCurto: 'TypeScript 6.0, lançado em março, é a última versão baseada em JavaScript. O TS 7.0, reescrito em Go, mira meados de 2026 com strict-by-default e remoção de targets legados.',
@@ -361,7 +362,7 @@ export const edicao20260914: Edicao = {
       tags: ['TypeScript', '7.0', 'Go', 'compilação', 'breaking changes', 'front-end'],
     },
     {
-      id: 'mat-119',
+      id: 'mat-169',
       tituloPt: 'Instabilidade recorrente na plataforma Claude em setembro de 2026',
       tituloOriginal: 'Claude platform elevated errors — September 2026',
       resumoCurto: 'Múltiplos incidentes em setembro: erros em Fable 5.1/Mythos 5.1, degradação da API, e Claude Code/Cowork impactados. Padrão de instabilidade se estende desde agosto.',
@@ -378,7 +379,7 @@ export const edicao20260914: Edicao = {
       tags: ['Claude', 'outage', 'estabilidade', 'API', 'Fable 5.1', 'fallback'],
     },
     {
-      id: 'mat-120',
+      id: 'mat-170',
       tituloPt: 'Sequoia: "2026 é o ano da AGI funcional" — agentes de longo horizonte são a chave',
       tituloOriginal: '2026: This is AGI',
       resumoCurto: 'Pat Grady e Sonya Huang argumentam que AGI funcional já chegou via agentes de longo horizonte que resolvem problemas por conta própria durante horas.',
@@ -398,7 +399,7 @@ export const edicao20260914: Edicao = {
       tags: ['Sequoia', 'AGI', 'agentes', 'longo horizonte', 'tese', 'investimento'],
     },
     {
-      id: 'mat-121',
+      id: 'mat-171',
       tituloPt: 'Anthropic expande acordo de computação com Google e Broadcom para 3,5 GW',
       tituloOriginal: 'Anthropic expands Google and Broadcom compute deal',
       resumoCurto: 'Acordo expandido dá à Anthropic acesso a ~3,5 GW de capacidade de computação via TPUs custom com Broadcom na infraestrutura do Google Cloud, com operação a partir de 2027.',
@@ -418,7 +419,7 @@ export const edicao20260914: Edicao = {
       tags: ['Anthropic', 'Google', 'Broadcom', 'TPU', 'infraestrutura', 'computação'],
     },
     {
-      id: 'mat-122',
+      id: 'mat-172',
       tituloPt: 'Next.js 16.3 traz navegação instantânea e dados renderizados no servidor',
       tituloOriginal: 'Next.js 16.3 — Instant Navigations, server-rendered data, optimistic updates',
       resumoCurto: 'Novas APIs para navegação instantânea com dados do servidor, atualizações otimistas e estado do cliente ao vivo para experiências tipo app.',
