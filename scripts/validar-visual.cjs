@@ -27,6 +27,7 @@ const EDICOES = Number(process.env.EDICOES || 5);
 const LARGURAS = [1440, 900, 390];
 const VAO_AVISO = 240;
 const PORTA = 4173;
+const CABECALHOS = path.join(require('node:os').tmpdir(), `attlas-visual-${process.pid}.txt`);
 const TIPOS = { html: 'text/html', js: 'application/javascript', css: 'text/css', json: 'application/json', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', svg: 'image/svg+xml', avif: 'image/avif', ico: 'image/x-icon', woff2: 'font/woff2', txt: 'text/plain' };
 const tipo = (arquivo) => TIPOS[(arquivo.split('?')[0].split('.').pop() || '').toLowerCase()] || 'application/octet-stream';
 
@@ -65,7 +66,13 @@ const servidor = http.createServer((req, res) => {
         const u = route.request().url();
         if (u.startsWith(`http://127.0.0.1:${PORTA}`)) return route.continue();
         try {
-          const corpo = execFileSync('curl', ['-sSL', '-m', '30', u], { maxBuffer: 5e7 });
+          const corpo = execFileSync('curl', ['-sSL', '-m', '30', '-D', CABECALHOS, u], { maxBuffer: 5e7 });
+          // O Chromium não aplica o Cross-Origin-Resource-Policy à resposta interceptada, então o
+          // desvio esconderia a imagem que o navegador recusa no portal de verdade
+          // (ERR_BLOCKED_BY_RESPONSE.NotSameOrigin). A regra é aplicada aqui.
+          const blocos = fs.readFileSync(CABECALHOS, 'utf8').trim().split(/\r?\n\r?\n/);
+          const corp = blocos[blocos.length - 1].match(/^cross-origin-resource-policy:\s*(.+)$/im)?.[1]?.trim().toLowerCase();
+          if (corp === 'same-origin' || corp === 'same-site') return route.abort('blockedbyresponse');
           await route.fulfill({ status: 200, contentType: tipo(u), body: corpo });
         } catch { await route.fulfill({ status: 502, body: '' }); }
       });

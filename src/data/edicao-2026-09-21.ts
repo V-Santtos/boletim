@@ -218,7 +218,7 @@ export const edicao20260921: Edicao = {
       data: '18/09/2026',
       dataISO: '2026-09-18',
       linkOriginal: 'https://platform.claude.com/docs/en/release-notes/overview#september-18-2026',
-      imagem: 'https://platform.claude.com/web-api/og/docs/en/release-notes/overview?design-rev=4',
+      imagem: '/imagens/b4f4d5e82643377e.jpg',
       orientacaoImagem: 'horizontal',
       area: 'Infra & Segurança',
       interesse: 'back-end',

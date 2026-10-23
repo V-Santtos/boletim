@@ -17,7 +17,7 @@ Uma edição só está pronta quando as quatro etapas passam. O mesmo comando ro
 | Etapa | Script | Trava |
 |---|---|---|
 | 1. Dados | `scripts/validar-edicoes.mjs` | id e data da edição batem com o arquivo; nenhum id de matéria repetido no portal; toda matéria com link e `dataISO` |
-| 2. Fotos | `scripts/enriquecer_imagens.py --aplicar` e `--verificar` | toda og:image disponível foi aplicada; toda foto gravada abre (≥ 600×300); nenhuma repetida na edição; nenhuma padrão de site (`scripts/imagens-genericas.txt`) |
+| 2. Fotos | `scripts/enriquecer_imagens.py --aplicar` e `--verificar` | toda og:image disponível foi aplicada; toda foto gravada abre (≥ 600×300); nenhuma repetida na edição; nenhuma padrão de site (`scripts/imagens-genericas.txt`); imagem cuja origem manda `Cross-Origin-Resource-Policy: same-origin` (claude.dev, platform.claude.com) entra como cópia em `public/imagens/`, porque o navegador a recusaria no portal |
 | 3. Build | `react-scripts build` com `CI=false` | compila |
 | 4. Visual | `scripts/validar-visual.cjs` | nas 5 edições mais recentes, em 1440/900/390: edição com foto nos dados mostra foto na tela, manchete com foto mostra a foto, nada quebrado, sem coluna vazia, sem scroll lateral, sem erro de JS |
 

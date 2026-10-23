@@ -337,7 +337,7 @@ export const edicao20260914: Edicao = {
       dataISO: '2026-09-01',
       dataAproximada: true,
       linkOriginal: 'https://platform.claude.com/docs/en/release-notes/overview',
-      imagem: 'https://platform.claude.com/web-api/og/docs/en/release-notes/overview?design-rev=2',
+      imagem: '/imagens/b4f4d5e82643377e.jpg',
       orientacaoImagem: 'horizontal',
       area: 'Back-end',
       interesse: 'back-end',

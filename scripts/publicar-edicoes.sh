@@ -109,8 +109,8 @@ for branch in "${branches[@]}"; do
     continue
   fi
   echo "$log" | grep -E '━━|✔|✘|fotos aplicadas' || true
-  if ! git diff --quiet -- src/data scripts/imagens-genericas.txt; then
-    git add src/data scripts/imagens-genericas.txt
+  if [ -n "$(git status --porcelain -- src/data public/imagens scripts/imagens-genericas.txt)" ]; then
+    git add src/data public/imagens scripts/imagens-genericas.txt
     git commit --quiet -m "Fotos de ${edicoes[*]##*/}"
   fi
 

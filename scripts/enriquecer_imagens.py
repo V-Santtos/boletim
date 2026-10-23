@@ -17,6 +17,10 @@ Regras (memória editorial):
   imagens-genericas.txt, as que páginas DIFERENTES devolvem (o logotipo da Anthropic)
   e os cartões de raiz de site (/images/OpenGraph.png, /static/og-image.png).
 
+Imagem cujo servidor proíbe exibição em outro site (Cross-Origin-Resource-Policy
+same-origin, como claude.dev e platform.claude.com) quebra no portal mesmo abrindo
+aqui. Ela entra como cópia reduzida em public/imagens, servida pelo próprio portal.
+
 Com --aplicar, também tira das edições as imagens gravadas que quebram essas regras.
 
 Uso:
@@ -31,6 +35,7 @@ gravada não abre, se repete na edição ou é padrão de site.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import re
 import sys
@@ -45,6 +50,9 @@ from bs4 import BeautifulSoup  # noqa: E402
 from PIL import Image  # noqa: E402
 
 DIR = Path("src/data")
+PUBLICO = Path("public")
+LOCAIS = PUBLICO / "imagens"  # cópias servidas pelo próprio portal
+LARGURA_LOCAL = 1200
 GENERICAS = Path(__file__).with_name("imagens-genericas.txt")
 LARGURA_MIN, ALTURA_MIN = 600, 300
 LIMITE_BYTES = 15_000_000
@@ -91,12 +99,66 @@ def og_image(s, link: str) -> str | None:
     return None
 
 
+# Motivos de recusa que não mudam na próxima tentativa: a imagem gravada com um deles sai.
+DEFINITIVOS = ("bloqueia", "HTTP 404", "HTTP 410", "content-type", "pequena demais", "não abre (Unidentified")
+
+
+def orientacao(largura: int, altura: int) -> str:
+    proporcao = largura / altura
+    return "horizontal" if proporcao > 1.15 else "vertical" if proporcao < 0.85 else "quadrada"
+
+
+def caminho_local(url: str) -> str:
+    """Onde fica a cópia local de uma imagem de fora: determinístico, para não duplicar."""
+    return f"/imagens/{hashlib.sha1(url.encode()).hexdigest()[:16]}.jpg"
+
+
+def copia_local(s, url: str, salvar: bool) -> tuple[str | None, str]:
+    """
+    Para imagem que o servidor de origem bloqueia em outro site (Cross-Origin-Resource-Policy):
+    baixa, reduz a no máximo 1200 px de largura e grava em public/imagens, servida pelo portal.
+    É a miniatura local que a missão do Attlas permite; a matéria segue linkando a fonte.
+    """
+    destino = caminho_local(url)
+    try:
+        r = s.get(url, timeout=TIMEOUT)
+        r.raise_for_status()
+        imagem = Image.open(io.BytesIO(r.content))
+        imagem.load()
+    except Exception as e:
+        return None, f"cópia local falhou ({type(e).__name__})"
+    if imagem.width < LARGURA_MIN or imagem.height < ALTURA_MIN:
+        return None, f"pequena demais ({imagem.width}x{imagem.height})"
+    if salvar:
+        if imagem.mode in ("RGBA", "LA", "P"):
+            fundo = Image.new("RGB", imagem.size, "white")
+            fundo.paste(imagem.convert("RGBA"), mask=imagem.convert("RGBA").split()[-1])
+            imagem = fundo
+        imagem = imagem.convert("RGB")
+        if imagem.width > LARGURA_LOCAL:
+            imagem = imagem.resize((LARGURA_LOCAL, round(imagem.height * LARGURA_LOCAL / imagem.width)), Image.LANCZOS)
+        LOCAIS.mkdir(parents=True, exist_ok=True)
+        imagem.save(PUBLICO / destino.lstrip("/"), "JPEG", quality=82, optimize=True, progressive=True)
+    return destino, orientacao(imagem.width, imagem.height)
+
+
 def abrir_imagem(s, url: str) -> tuple[str | None, str]:
     """Baixa e abre a imagem. Devolve (orientação, '') ou (None, motivo)."""
+    if url.startswith("/imagens/"):
+        try:
+            with Image.open(PUBLICO / url.lstrip("/")) as local:
+                return orientacao(*local.size), ""
+        except Exception as e:
+            return None, f"cópia local não abre ({type(e).__name__})"
     try:
         r = s.get(url, timeout=TIMEOUT, stream=True)
         if r.status_code >= 400:
             return None, f"HTTP {r.status_code}"
+        # Cross-Origin-Resource-Policy same-origin/same-site: o navegador recusa a imagem em
+        # qualquer outro site (ERR_BLOCKED_BY_RESPONSE.NotSameOrigin). Abre aqui, quebra no portal.
+        corp = r.headers.get("cross-origin-resource-policy", "").strip().lower()
+        if corp in ("same-origin", "same-site"):
+            return None, f"servidor bloqueia exibição em outro site (Cross-Origin-Resource-Policy: {corp})"
         if not r.headers.get("content-type", "").startswith("image/"):
             return None, f"content-type {r.headers.get('content-type', '?')}"
         dados = r.raw.read(LIMITE_BYTES + 1, decode_content=True)
@@ -107,8 +169,7 @@ def abrir_imagem(s, url: str) -> tuple[str | None, str]:
         return None, f"não abre ({type(e).__name__})"
     if largura < LARGURA_MIN or altura < ALTURA_MIN:
         return None, f"pequena demais ({largura}x{altura})"
-    proporcao = largura / altura
-    return ("horizontal" if proporcao > 1.15 else "vertical" if proporcao < 0.85 else "quadrada"), ""
+    return orientacao(largura, altura), ""
 
 
 def main() -> int:
@@ -149,10 +210,12 @@ def main() -> int:
                 remover.add((arquivo.name, id_))
             else:
                 vistas[url] = id_
-                if args.verificar:
-                    ok, motivo = abrir_imagem(s, url)
-                    if not ok:
-                        problemas.append(f"{arquivo.name} {id_}: imagem gravada {motivo} ({url})")
+                ok, motivo = abrir_imagem(s, url)
+                if not ok:
+                    problemas.append(f"{arquivo.name} {id_}: imagem gravada {motivo} ({url})")
+                    # Defeito permanente sai; falha de rede passageira só reprova a verificação.
+                    if any(d in motivo for d in DEFINITIVOS):
+                        remover.add((arquivo.name, id_))
 
     # 2. Matérias sem imagem: procura a og:image de cada link.
     pendentes: list[tuple[Path, str, str]] = []  # (arquivo, id, link)
@@ -175,6 +238,7 @@ def main() -> int:
     genericas |= novas_genericas
 
     abertura: dict[str, tuple[str | None, str]] = {}
+    locais: set[str] = set()  # imagens de fora que entram como cópia em public/imagens
     escolhidas: dict[tuple[str, str], tuple[str, str]] = {}  # (arquivo, id) -> (url, orientação)
     na_edicao: dict[str, set[str]] = defaultdict(set)  # imagens e páginas que cada edição já ilustra
     paginas_da_imagem: dict[str, set[str]] = defaultdict(set)  # imagem -> páginas que a usam no portal
@@ -187,23 +251,36 @@ def main() -> int:
     print("Matérias sem imagem:")
     for arquivo, id_, link in pendentes:
         url = og_por_link[link]
+        # Uma imagem de fora pode já estar no portal como cópia local: as duas formas contam.
+        formas = {url, caminho_local(url)} if url else set()
+        paginas = set().union(*(paginas_da_imagem[f] for f in formas)) if formas else set()
         if not url:
             motivo = "fonte sem og:image"
         elif padrao_do_site(url, genericas):
             motivo = "imagem padrão do site, não da matéria"
-        elif url in na_edicao[arquivo.name] or normalizar(link) in na_edicao[arquivo.name]:
+        elif formas & na_edicao[arquivo.name] or normalizar(link) in na_edicao[arquivo.name]:
             motivo = "página ou arte já ilustra outra matéria da edição"
-        elif paginas_da_imagem[url] - {normalizar(link)}:
+        elif paginas - {normalizar(link)}:
             motivo = "arte já usada por outra publicação"
         else:
             if url not in abertura:
                 abertura[url] = abrir_imagem(s, url)
-            orientacao, motivo = abertura[url]
-            if orientacao:
-                escolhidas[(arquivo.name, id_)] = (url, orientacao)
-                na_edicao[arquivo.name] |= {url, normalizar(link)}
-                paginas_da_imagem[url].add(normalizar(link))
-                print(f"  ✔ {arquivo.name} {id_}: {orientacao}  {url}")
+                # Bloqueada só para outro site: vira cópia local servida pelo portal.
+                if abertura[url][0] is None and "bloqueia" in abertura[url][1]:
+                    local, orient = copia_local(s, url, salvar=args.aplicar)
+                    if local:
+                        abertura[url] = (orient, "")
+                        locais.add(url)
+                    else:
+                        abertura[url] = (None, f"{abertura[url][1]}; {orient}")
+            orient, motivo = abertura[url]
+            if orient:
+                gravada = caminho_local(url) if url in locais else url
+                escolhidas[(arquivo.name, id_)] = (gravada, orient)
+                na_edicao[arquivo.name] |= formas | {normalizar(link)}
+                for f in formas:
+                    paginas_da_imagem[f].add(normalizar(link))
+                print(f"  ✔ {arquivo.name} {id_}: {orient}  {gravada}" + ("  (cópia local: a origem bloqueia outro site)" if gravada != url else ""))
                 continue
         print(f"  · {arquivo.name} {id_}: fica sem foto — {motivo}")
 
@@ -229,7 +306,8 @@ def main() -> int:
         if novas_genericas:
             with GENERICAS.open("a", encoding="utf-8") as f:
                 f.writelines(f"{url}\n" for url in sorted(novas_genericas))
-        problemas = [p for p in problemas if "imagem gravada" in p]  # as demais foram corrigidas
+        # O que foi removido está corrigido; sobra só a falha passageira de rede.
+        problemas = [p for p in problemas if "imagem gravada" in p and not any(d in p for d in DEFINITIVOS)]
     elif args.verificar and escolhidas:
         problemas += [f"{a} {i}: foto disponível e não aplicada ({u})" for (a, i), (u, _) in escolhidas.items()]
 
