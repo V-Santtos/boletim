@@ -1,0 +1,47 @@
+name: Publicar edição do Attlas
+
+# A rotina semanal escreve a edição num branch claude/* e para ali. Este workflow leva a
+# edição até a main sem ninguém precisar mesclar o PR: mescla, valida, compila e dá push.
+# A Vercel publica a partir da main. Se algo falhar, a main não muda e o job fica vermelho.
+#
+# - push num branch claude/*: publica a edição que acabou de chegar.
+# - todo dia 12:17 UTC (e à mão): varre todos os branches claude/* atrás de edição esquecida.
+
+on:
+  push:
+    branches: ['claude/**']
+  schedule:
+    - cron: '17 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publicar-attlas
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Publicar na main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          # O script troca de branch durante a execução; roda de uma cópia fora da árvore.
+          cp scripts/publicar-edicoes.sh "$RUNNER_TEMP/publicar-edicoes.sh"
+          if [ "${{ github.event_name }}" = push ]; then
+            bash "$RUNNER_TEMP/publicar-edicoes.sh" "${{ github.ref_name }}"
+          else
+            bash "$RUNNER_TEMP/publicar-edicoes.sh"
+          fi

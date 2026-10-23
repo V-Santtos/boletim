@@ -6,16 +6,18 @@ A memória editorial fica em `.claude/skills/attlas-editorial-memory/SKILL.md` e
 
 ## Fluxo de entrega da edição semanal
 
-O portal é publicado na Vercel a partir do branch `main`. **Uma edição que não chega na `main` não existe para os sócios.** Três edições já se perderam assim, em branches paralelos sem PR.
+O portal é publicado na Vercel a partir do branch `main`. **Uma edição que não chega na `main` não existe para os sócios.** Cinco edições já se perderam assim: até 19/10 cada uma esperava alguém mesclar o PR à mão, ninguém mesclava, e o site ficou parado em 05/10.
 
-1. Comece do estado real: `git fetch origin main && git checkout -B <branch-da-execucao> origin/main`. Confira em `src/data/edicoes.ts` quais edições já estão registradas.
-2. Se alguma edição anterior tiver ficado para trás em outro branch (`git branch -r`), traga-a antes de escrever a nova — o histórico não pode se fragmentar.
-3. Crie `src/data/edicao-AAAA-MM-DD.ts` exportando `export const edicaoAAAAMMDD: Edicao` com `id: 'ed-AAAA-MM-DD'`.
-4. Registre a edição no **início** do array `edicoes` em `src/data/edicoes.ts` (ordem decrescente por data).
-5. **Não altere `App.tsx` para trocar a edição exibida.** O seletor do cabeçalho lê `edicoes` e abre em `edicaoMaisRecente` automaticamente.
-6. `npm install && npm run build` — a edição só fecha com build limpo.
-7. Commit, push do branch e **abra um pull request para `main`**, com título `Attlas — edição de DD/MM/AAAA` e corpo listando matérias adicionadas, duplicatas agrupadas, fontes indisponíveis e itens que precisam de revisão humana.
-8. Encerre informando o link do PR.
+**A publicação agora é automática.** O workflow `.github/workflows/publicar-edicao.yml` roda a cada push num branch `claude/**`: se o branch traz um `src/data/edicao-AAAA-MM-DD.ts` que a `main` não tem, ele mescla na `main`, roda `scripts/validar-edicoes.mjs` e o build, e dá push. A Vercel publica a partir da `main`. Uma varredura diária (12:17 UTC) pega edição que tenha escapado. Basta a edição chegar ao branch com build limpo — não espere merge de PR.
+
+1. Comece do estado real: `git fetch origin main && git checkout -B <branch-da-execucao> origin/main`. As edições publicadas são os arquivos `src/data/edicao-*.ts` da `main`.
+2. Se alguma edição anterior tiver ficado para trás em outro branch (`git branch -r`), traga-a antes de escrever a nova e não repita as matérias dela.
+3. Crie `src/data/edicao-AAAA-MM-DD.ts` exportando `export const edicaoAAAAMMDD: Edicao` com `id: 'ed-AAAA-MM-DD'`. Use uma faixa de IDs de matéria nova (a seguinte à maior já usada: depois de `mat-7xx` vem `mat-801`).
+4. **Não edite `src/data/edicoes.ts`.** Ele descobre toda edição da pasta sozinho e ordena por data; editar a lista à mão é o que fazia duas edições conflitarem.
+5. **Não altere `App.tsx` para trocar a edição exibida.** O seletor do cabeçalho abre na edição mais recente automaticamente.
+6. `npm install && node scripts/validar-edicoes.mjs && npm run build` — a edição só fecha com dados válidos e build limpo. O workflow repete os dois e não publica se falharem.
+7. Commit e push do branch. Abra também um pull request para `main` como registro, com título `Attlas — edição de DD/MM/AAAA` e corpo listando matérias adicionadas, duplicatas agrupadas, fontes indisponíveis e itens que precisam de revisão humana. O PR fecha sozinho como mesclado quando o workflow publica.
+8. Encerre informando o link do PR e o resultado do workflow `Publicar edição do Attlas` no branch.
 
 ## Validação visual — obrigatória antes de fechar
 
