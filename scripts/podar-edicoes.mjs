@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Poda o arquivo do Attlas: remove as edições mais antigas que a janela de retenção
- * e reescreve src/data/edicoes.ts com o que sobrou.
+ * Poda o arquivo do Attlas: remove as edições mais antigas que a janela de retenção.
+ * src/data/edicoes.ts descobre as edições pela pasta, então basta apagar o arquivo.
  *
  *   node scripts/podar-edicoes.mjs            # simulação, não escreve nada
  *   node scripts/podar-edicoes.mjs --aplicar  # apaga de verdade
@@ -10,7 +10,7 @@
  * O conteúdo removido continua no histórico do git — `git log -- src/data` recupera
  * qualquer edição podada. A poda enxuga o portal, não destrói o arquivo.
  */
-import { readFileSync, writeFileSync, unlinkSync, readdirSync } from 'node:fs';
+import { readFileSync, unlinkSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
@@ -27,7 +27,7 @@ const edicoes = arquivos.map((nome) => {
   const exportName = fonte.match(/export const (\w+)\s*:\s*Edicao/)?.[1];
   // Uma linha de linkOriginal por matéria — contagem estável mesmo se a indentação mudar.
   const materias = (fonte.match(/^\s*linkOriginal:/gm) ?? []).length;
-  return { nome, dataISO, exportName, materias, modulo: `./${nome.replace(/\.ts$/, '')}` };
+  return { nome, dataISO, exportName, materias };
 }).sort((a, b) => b.dataISO.localeCompare(a.dataISO));
 
 if (edicoes.length === 0) { console.error('Nenhuma edição encontrada em src/data.'); process.exit(1); }
@@ -53,12 +53,5 @@ if (!aplicar) { console.log('\nSimulação. Rode com --aplicar para efetivar.');
 
 podar.forEach((e) => unlinkSync(join(DIR, e.nome)));
 
-// Apelida cada import pela data: a edição de 27/08 exporta `edicaoAtual`, e sem o
-// apelido duas edições poderiam colidir no mesmo nome.
-const apelido = (e) => `edicao${e.dataISO.replace(/-/g, '')}`;
-const imports = manter.map((e) => `import { ${e.exportName}${e.exportName === apelido(e) ? '' : ` as ${apelido(e)}`} } from '${e.modulo}';`).join('\n');
-const lista = manter.map(apelido).join(', ');
-writeFileSync(join(DIR, 'edicoes.ts'), `import { Edicao } from '../types';\n${imports}\n\n/** Edições em ordem decrescente: a mais recente sempre em primeiro. */\nexport const edicoes: Edicao[] = [${lista}];\n\nexport const edicaoMaisRecente = edicoes[0];\n`);
-
-console.log(`\nPodadas ${podar.length} edições. edicoes.ts reescrito com ${manter.length}.`);
+console.log(`\nPodadas ${podar.length} edições. Ficaram ${manter.length}.`);
 console.log('Rode `npm run build` antes de commitar.');

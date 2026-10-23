@@ -1,0 +1,168 @@
+import { Edicao } from '../types';
+
+export const edicao20261019: Edicao = {
+  id: 'ed-2026-10-19',
+  dataEdicao: '19 de outubro de 2026',
+  dataISO: '2026-10-19',
+  periodoCobertura: { de: '2026-10-13', ate: '2026-10-19' },
+  ultimaAtualizacao: '19/10/2026 às 14:00 UTC',
+  fontesIndisponiveis: [
+    'openai.com — Cloudflare continua devolvendo 403 ao sandbox. Nenhuma página do domínio principal pôde ser acessada nesta edição.',
+    'developers.openai.com/changelog — bloqueado junto com o domínio principal da OpenAI.',
+    'X/Twitter (todos os perfis) — bloqueado pela política de rede, como nas edições anteriores. Nenhum sinal de Karpathy, Boris Cherny, Sam Altman ou canais oficiais pôde ser verificado.',
+    'sequoiacap.com — página sem conteúdo datado ou filtrável; nenhuma publicação específica do período foi identificada.',
+    'a16z.com — página de conteúdo sem datas visíveis; artigos não puderam ser datados com precisão para o período de cobertura.',
+    'status.openai.com e status.claude.com — não verificados nesta edição.',
+  ],
+  notasRevisao: [
+    'Esta edição cobre a semana de 13/10 a 19/10/2026. Foi escrita sem a edição de 12/10 na main e repetia seis assuntos dela; a revisão de 23/10 tirou cinco matérias repetidas (Haiku 5.5, Cyber Mission, Dashboards e Motion, guia de automações com Managed Agents e política de uso) e reduziu as duas parciais ao que era novo.',
+    'A matéria do changelog da Claude Platform (mat-704) agora cobre só o que saiu em 15/10: fast mode do Opus 5.5 fora do preview, Models API e Compliance API. Cache do Sonnet 5.5 e workflows dinâmicos ficaram com a edição de 12/10.',
+    'Duas matérias são de 06/10, dentro da janela da edição anterior, mas ela não as cobriu: EmbeddingGemma 2 (mat-705) e Nano Banana 2.1 (mat-707). A mat-707 ficou só com o lançamento; as deprecações de Gemini Flash e Deep Research estão na edição de 12/10.',
+    'O Gemini 4 Argon em disponibilidade geral (mat-701) complementa a mat-504 da edição de 05/10, que cobriu o anúncio inicial do modelo em 30/09.',
+    'Todas as matérias foram escritas a partir de fontes primárias: Anthropic (anthropic.com, claude.com, platform.claude.com) e Google (blog.google, ai.google.dev). Release notes da Claude Platform e changelog da Gemini API conferidos de novo em 23/10.',
+    'Nenhuma matéria traz imagem nesta edição: as og:image das fontes não puderam ser confirmadas a tempo, e a memória editorial proíbe incluir URL de imagem sem verificar que o arquivo abre.',
+    'IDs renumerados para mat-701 em diante: a versão original reusava mat-601 a mat-612, já ocupados pela edição de 12/10.',
+  ],
+  materias: [
+    {
+      id: 'mat-701',
+      tituloPt: 'Gemini 4 Argon entra em disponibilidade geral para desenvolvedores e usuários do app',
+      tituloOriginal: 'Gemini 4 Argon is now available',
+      resumoCurto:
+        'O Gemini 4 Argon alcançou disponibilidade geral em 13 de outubro, acessível pela API paga no Google AI Studio, Android Studio e pelo app Gemini para assinantes AI Pro e Ultra. O Google Antigravity, plataforma de coding agêntico, chegou ao app Gemini para macOS.',
+      analiseDetalhada:
+        'O Gemini 4 Argon, anunciado em 30 de setembro, passou de preview para GA em 13 de outubro — duas semanas após o lançamento inicial. A disponibilidade geral traz o modelo para a camada paga da Gemini API, acessível no Google AI Studio e no Android Studio. No app Gemini, está disponível para assinantes do AI Pro e do AI Ultra.\n\nA novidade mais relevante para desenvolvedores é a integração do Google Antigravity — a plataforma de coding agêntico do Google — diretamente no app Gemini para macOS. Isso cria um fluxo onde o desenvolvedor pode alternar entre conversa e código dentro do mesmo ambiente, com o Argon como modelo subjacente. A interface permite mudar entre chat e tasks com um toggle, e as tasks podem continuar rodando em background quando o usuário sai do computador.\n\nO ecossistema de Connected Apps cresceu para mais de 40 integrações, incluindo Instacart, OpenTable, Adobe e Shopify. Para desenvolvedores, o modelo mantém as especificações técnicas do anúncio: janela de 1 milhão de tokens de saída, liderança no DeepSWE v1.1 (77,9%) e preço introdutório de US$ 2/US$ 10 por milhão de tokens com 95% de desconto em cache.\n\nParalelamente, o changelog da Gemini API registrou depreciações significativas em 8 de outubro: o Gemini 3.7 Flash foi redirecionado para o 3.8 Flash, o 3.5 Flash para o 3.6 Flash, e o Deep Research deep-research-pro-preview-12-2025 tem desligamento marcado para 23 de outubro. Desenvolvedores com integrações nesses modelos precisam atualizar o model string.',
+      porQueImporta:
+        'Para os sócios, o GA do Argon confirma a paridade de preço trilateral: Argon, Sonnet 5.5 e GPT-6.1 Sol custam todos US$ 2/US$ 10 por milhão de tokens. A escolha entre os três é agora puramente de desempenho, integração e ecossistema — não de custo. O Antigravity no app Gemini para macOS é relevante para quem avalia alternativas ao Claude Code: é a resposta do Google ao desenvolvimento agêntico com modelo de fronteira integrado. As depreciações do Flash 3.5 e 3.7 exigem ação se há código apontando para esses model IDs.',
+      fonte: 'Google',
+      data: '13/10/2026',
+      dataISO: '2026-10-13',
+      linkOriginal: 'https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/',
+      area: 'IA & Modelos',
+      interesse: 'ambos',
+      prioridade: 'essencial',
+      tipo: 'lançamento',
+      tags: ['Google', 'Gemini', 'Argon', 'GA', 'Antigravity', 'coding agêntico', 'deprecação'],
+    },
+    {
+      id: 'mat-702',
+      tituloPt: 'Code Review sai do preview: revisão automática de PRs disponível para Team e Enterprise',
+      tituloOriginal: 'Code Review is now generally available',
+      resumoCurto:
+        'O Code Review da Anthropic saiu do research preview e está disponível para organizações Team e Enterprise. Reviews ficaram 3x mais rápidos (6–10 minutos), organizações Enterprise podem reivindicar US$ 10.000 em créditos, e o processo interno da Anthropic mostra como Claude já escreve 90% do código do Claude Code.',
+      analiseDetalhada:
+        'O Code Review passou de research preview para GA em 15 de outubro. A ferramenta roda automaticamente em novos PRs via GitHub App, sem configuração do desenvolvedor — o admin habilita, instala o app e escolhe os repositórios. A velocidade de revisão caiu de aproximadamente 20 minutos para 6–10 minutos, uma melhoria de 3x. Cada repositório pode ser configurado como Quick, Standard (padrão) ou Deep, ajustando profundidade e velocidade.\n\nOrganizações Enterprise elegíveis podem reivindicar pelo menos US$ 10.000 em créditos para Code Review até 15 de janeiro de 2027, com validade de 30 dias após a ativação. O preço por uso não foi divulgado na página.\n\nO artigo técnico publicado simultaneamente pelo time do Claude Code revela métricas internas impressionantes. Claude escreve aproximadamente 90% do código do Claude Code. De junho a setembro, o número de PRs merged mais que dobrou, enquanto a taxa de reverts caiu mais de 40%. No monorepo da Anthropic, os daily landed changes subiram de cerca de 2.500 em maio para mais de 30.000 em setembro.\n\nO sistema de revisão opera em camadas: verificação antes do PR (testes, build, lint, subagente revisando o diff em contexto limpo), revisão por IA em todo PR (agentes buscam bugs em paralelo, verificadores votam em cada achado, apenas achados com consenso são postados), revisão de segurança bloqueante, CI bloqueante, aprovação humana baseada em risco e merge queue com feature flags.\n\nOs tiers de risco determinam quantas aprovações humanas são necessárias: Low (docs, copy, features internas atrás de flag) não requer aprovação humana após as checagens automatizadas; Medium (mudanças de produto regulares, áreas sensíveis como caching e system prompts) requer uma pessoa; High (código de maior risco, caminhos que sempre precisam de duas pessoas) requer duas. A aprovação de um agente nunca conta como aprovação humana. Cada aprovação cobre um commit específico — novos commits não vouched exigem re-aprovação.\n\nAs métricas de convergência melhoraram significativamente: PRs que passam após uma rodada de review-and-fix subiram de 65% para 78%, PRs que precisam de cinco ou mais rodadas caíram de 8,9% para 1,5%, e a média de reviews até pass caiu de 2,08 para 1,32.',
+      porQueImporta:
+        'Para os dois sócios, o Code Review GA é a ferramenta mais diretamente aplicável desta edição. Se vocês usam GitHub com plano Team ou Enterprise, a configuração é mínima: habilitar, instalar o app e escolher os repositórios. Os US$ 10.000 em créditos para Enterprise são suficientes para avaliar a ferramenta em escala real.\n\nO dado mais provocador é o modelo operacional da própria Anthropic: Claude escrevendo 90% do código, PRs dobrando em volume e reverts caindo 40%. Isso não é marketing — é como eles realmente operam. O sistema de tiers de risco, com aprovação humana proporcional ao impacto, é um blueprint que pode ser replicado em qualquer equipe que adote revisão por IA. Os arquivos CLAUDE.md e REVIEW.md como mecanismos de configuração do revisor são a parte mais acionável: descrevem o projeto e o que importa naquele repositório.',
+      fonte: 'Anthropic',
+      data: '15/10/2026',
+      dataISO: '2026-10-15',
+      linkOriginal: 'https://claude.com/resources/articles/code-review-is-now-generally-available',
+      area: 'Ferramentas & Agents',
+      interesse: 'ambos',
+      prioridade: 'essencial',
+      tipo: 'lançamento',
+      tags: ['Claude', 'Code Review', 'GA', 'GitHub', 'revisão de código', 'automação', 'CLAUDE.md', 'REVIEW.md'],
+    },
+    {
+      id: 'mat-703',
+      tituloPt: 'Anthropic abre observabilidade de agentes com OpenTelemetry para Managed Agents e API',
+      tituloOriginal: 'Agent observability on the Claude Platform',
+      resumoCurto:
+        'A Anthropic lançou em beta público a exportação de traces OpenTelemetry para Managed Agents, Messages API e SDKs Claude. Cada trace registra turns de agente, chamadas de modelo, uso de ferramentas, latência e contagem de tokens, compatível com qualquer backend OTel.',
+      analiseDetalhada:
+        'A observabilidade de agentes, anunciada em 14 de outubro, adiciona rastreamento OpenTelemetry nativo à plataforma Claude. A implementação segue as convenções semânticas GenAI do OpenTelemetry, o que significa que traces de Claude e de outros provedores podem compartilhar os mesmos dashboards e ferramentas de análise.\n\nO escopo abrange três camadas: Managed Agents (cada sessão de agente é rastreada), Messages API (cada requisição gera spans) e SDKs Claude (exportação automática, sem necessidade de configuração no Console). Os spans registram agent turns, chamadas de modelo, uso de ferramentas (incluindo MCP servers), latência por operação, contagem de tokens e IDs de rastreamento.\n\nA configuração para Managed Agents e Messages API é feita adicionando um destino no Claude Console. Para SDKs, a exportação é automática. Qualquer ferramenta que aceite um endpoint OTLP padrão funciona. As integrações confirmadas incluem Grafana Cloud, Honeycomb, Sentry e Splunk para debugging; Arize AI, Braintrust, Datadog, Langfuse, LangSmith, New Relic e PostHog para evals e melhoria de qualidade; e Databricks Unity Gateway para rastreamento de uso por equipe.\n\nA documentação completa está em platform.claude.com/docs/en/manage-claude/opentelemetry, com detalhes de configuração, linguagens de SDK suportadas (Python, TypeScript, C#, Go, Java, PHP e Ruby) e parâmetros de autenticação.',
+      porQueImporta:
+        'Para o sócio de back-end, esta é a peça que faltava para colocar agentes Claude em produção com confiança. Sem observabilidade, agentes são caixas-pretas — você sabe que rodaram, mas não por que demoraram, onde gastaram tokens ou quais ferramentas chamaram. Com OTel nativo, os traces entram no mesmo stack de observabilidade que já monitora os serviços: Grafana, Datadog, ou qualquer backend compatível.\n\nO detalhe mais prático é que as SDKs exportam automaticamente, sem configuração adicional. Se já existir um coletor OTel no ambiente, os spans aparecem. O suporte a sete linguagens (Python, TypeScript, C#, Go, Java, PHP, Ruby) cobre praticamente qualquer stack de produção.',
+      fonte: 'Anthropic',
+      data: '14/10/2026',
+      dataISO: '2026-10-14',
+      linkOriginal: 'https://claude.com/resources/articles/agent-observability-on-the-claude-platform',
+      area: 'Ferramentas & Agents',
+      interesse: 'back-end',
+      prioridade: 'relevante',
+      tipo: 'lançamento',
+      tags: ['Claude', 'OpenTelemetry', 'observabilidade', 'Managed Agents', 'tracing', 'produção'],
+    },
+    {
+      id: 'mat-704',
+      tituloPt: 'Fast mode do Claude Opus 5.5 sai do research preview e deixa de exigir header beta',
+      tituloOriginal: 'Claude Platform release notes — October 15, 2026',
+      resumoCurto:
+        'Em 15 de outubro, o fast mode do Claude Opus 5.5 saiu do research preview: não é mais preciso pedir acesso nem enviar o header fast-mode-2026-02-01, e os tiers Start, Build e Scale ganharam rate limit padrão para ele. No Opus 5 e no Opus 4.8, o fast mode continua em preview.',
+      analiseDetalhada:
+        'O fast mode do Opus 5.5 deixou de ser experimental. Requests ao modelo não precisam mais do header fast-mode-2026-02-01, e quem ainda o envia continua funcionando: a remoção pode esperar. O acesso deixou de ser por pedido, e os tiers de uso Start, Build e Scale passaram a ter um rate limit padrão de fast mode para o Opus 5.5. O mesmo fast mode chegou ao Claude in Microsoft Foundry, para deployments hospedados na Azure.\n\nA mudança vale só para o Opus 5.5. Para o Claude Opus 5 e o Claude Opus 4.8, o fast mode segue em research preview, e o header beta continua obrigatório.\n\nNo mesmo dia, a Models API ganhou o campo capabilities.thinking.types.between_tools: GET /v1/models e GET /v1/models/{model_id} passam a informar se cada modelo aceita thinking: {type: "between_tools"}, modo que desliga o raciocínio antes da primeira resposta. E a Compliance API, em beta para organizações Claude Enterprise, passou a devolver o texto que cada membro salvou como instruções para o Claude no claude.ai e como instruções globais no Cowork, pelo endpoint GET /v1/compliance/organizations/{org_uuid}/user_preferences com o escopo read:compliance_user_data.\n\nO corte de 50% no cache read do Sonnet 5.5 e os workflows dinâmicos para Managed Agents, também desse changelog, saíram na edição de 12/10.',
+      porQueImporta:
+        'Para o sócio de back-end, o fast mode do Opus 5.5 vira uma opção de produção, com rate limit previsível, e não mais um recurso que dependia de liberação. Fluxos sensíveis a latência que usam o Opus 5.5 podem adotá-lo sem pedir acesso; o header pode sair do código na próxima limpeza, sem pressa. Quem usa Opus 5 ou Opus 4.8 deve manter o header.\n\nO campo between_tools na Models API permite checar a capacidade do modelo em tempo de execução, em vez de fixar no código quais modelos aceitam esse modo de thinking.',
+      fonte: 'Claude Platform',
+      data: '15/10/2026',
+      dataISO: '2026-10-15',
+      linkOriginal: 'https://platform.claude.com/docs/en/release-notes/overview',
+      area: 'Back-end',
+      interesse: 'back-end',
+      prioridade: 'relevante',
+      tipo: 'changelog',
+      tags: ['Claude', 'Opus 5.5', 'fast mode', 'API', 'Models API', 'Compliance API', 'changelog'],
+    },
+    {
+      id: 'mat-705',
+      tituloPt: 'EmbeddingGemma 2: modelo aberto de 740M parâmetros leva embeddings multimodais ao dispositivo',
+      tituloOriginal: 'EmbeddingGemma 2: an open, lightweight multimodal embedding model',
+      resumoCurto:
+        'O Google lançou o EmbeddingGemma 2, modelo aberto de 740M parâmetros sob Apache 2.0 que mapeia texto, imagens, áudio, vídeo e código em um espaço vetorial compartilhado. Com 191MB de RAM ativa para texto e 567MB para multimodal em um Pixel 11 Pro, é o modelo de embedding sub-1B mais capaz em MTEB Code e MAEB.',
+      analiseDetalhada:
+        'O EmbeddingGemma 2, publicado em 6 de outubro, é construído sobre a arquitetura Gemma 4 e usa a mesma tecnologia dos Gemini Embedding models. O modelo tem 740M parâmetros totais, com arquitetura modular: o módulo de texto usa aproximadamente 270M parâmetros, o encoder de visão adiciona 170M e o de áudio 300M. A janela de contexto é de 8K tokens, 4x maior que a primeira versão.\n\nA capacidade multimodal é o diferencial: texto, imagens, áudio, vídeo e código são mapeados em um único espaço vetorial compartilhado. Isso permite buscas cross-modais — encontrar imagens a partir de texto, vídeos a partir de áudio, ou código a partir de descrições em linguagem natural. O modelo processa cerca de 5,5 minutos de áudio, 29 imagens, 58 frames de vídeo ou combinações em uma única passagem.\n\nO Matryoshka Representation Learning permite comprimir os vetores de 768 dimensões para 512, 256 ou 128, com até 6x de economia de armazenamento e perda controlada de qualidade. Isso é particularmente útil para deploy em dispositivo, onde memória e storage são limitados.\n\nEm benchmarks, o modelo lidera entre os sub-1B em MTEB Code (78,68, +9,92 pontos) e MAEB (Massive Audio Embedding Benchmark). O desempenho multilingual de texto iguala o EmbeddingGemma original. O Google afirma que o modelo supera alguns modelos especialistas com mais do dobro do tamanho em tarefas de imagem, vídeo, documento e áudio.\n\nNo Pixel 11 Pro com quantização, o consumo é de aproximadamente 191MB de RAM para pesos text-only e 567MB para o modelo multimodal completo. A licença é Apache 2.0, com pesos disponíveis no Hugging Face e Kaggle. O suporte inclui MediaPipe, LiteRT, transformers.js, WebGPU, vLLM, llama.cpp, SGLang, Ollama e LM Studio.',
+      porQueImporta:
+        'Para os dois sócios, o EmbeddingGemma 2 é relevante por dois motivos. Primeiro, é o modelo de embedding mais capaz que roda em dispositivo com licença aberta — útil para aplicações que precisam de busca semântica local sem mandar dados para a nuvem. A capacidade de indexar código localmente (líder em MTEB Code) é diretamente aplicável para ferramentas de desenvolvimento.\n\nSegundo, o espaço vetorial compartilhado entre modalidades abre possibilidades para RAG multimodal: indexar documentação com screenshots, diagramas de arquitetura junto com texto, ou vídeos de onboarding pesquisáveis por conteúdo. A compressão Matryoshka para 128 dimensões com economia de 6x viabiliza essas aplicações em escala sem estourar custos de armazenamento vetorial.',
+      fonte: 'Google',
+      data: '06/10/2026',
+      dataISO: '2026-10-06',
+      linkOriginal: 'https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/',
+      area: 'IA & Modelos',
+      interesse: 'ambos',
+      prioridade: 'relevante',
+      tipo: 'lançamento',
+      tags: ['Google', 'EmbeddingGemma', 'embedding', 'multimodal', 'open source', 'on-device', 'RAG'],
+    },
+    {
+      id: 'mat-706',
+      tituloPt: 'Anthropic cria fundo de benefício público com 5% das ações e escalator vinculado à valorização',
+      tituloOriginal: 'Investing in the public benefit',
+      resumoCurto:
+        'A Anthropic comprometeu 5% das suas ações em um Public Benefit Fund, com aumento de 2% para cada 50% de valorização acima de uma baseline. Combinado com o pledge de 80% dos fundadores e o programa de match de equity de funcionários, cerca de 20% das ações são destinadas ao benefício público.',
+      analiseDetalhada:
+        'Anunciado em 18 de outubro, o Public Benefit Fund é uma LLC de propriedade integral da Anthropic que receberá 5% das ações da empresa, sujeito a aprovação dos acionistas. A escolha de LLC em vez de 501(c)(3) é intencional: permite flexibilidade entre doações tradicionais a nonprofits e distribuições diretas a populações específicas.\n\nO mecanismo de escalator é o aspecto mais relevante: o board pode adicionar 2% de equity para cada 50% de aumento no valor da empresa acima de uma baseline não divulgada. Isso significa que, quanto mais a Anthropic vale, maior a fatia destinada ao benefício público. O fundo não pode ser usado para lobbying ou doações políticas, nos EUA ou no exterior.\n\nSomado ao pledge dos cofundadores de 80% de sua equity e a um programa de match de equity de funcionários (com participação de aproximadamente metade da empresa), a Anthropic estima que cerca de 20% das ações serão dedicadas ao bem público, mais os incrementos por valorização.\n\nO foco inicial mencionado é o impacto no mercado de trabalho. A Anthropic reconhece que IA pode causar instabilidade para muitos trabalhadores e diz que abordagens mais ousadas podem ser necessárias. O compromisso separado de US$ 200 milhões da empresa para esse tema não faz parte do fundo.\n\nNos próximos meses, a Anthropic promete divulgar mais sobre estrutura, governança e marcos de valorização do fundo, além de um relatório de benefício público sobre o progresso contra a missão.',
+      porQueImporta:
+        'Para os sócios, esta é uma notícia de contexto estratégico sobre a Anthropic como empresa, não de impacto técnico direto. O escalator vinculado à valorização é um mecanismo interessante: alinha o crescimento da empresa com o compromisso público de forma proporcional, diferente de doações fixas. O foco em impacto no mercado de trabalho por IA é um sinal de que a Anthropic espera disrupção significativa nessa área — o que reforça a tese de que investir em habilidades de IA é proteção, não luxo.',
+      fonte: 'Anthropic',
+      data: '18/10/2026',
+      dataISO: '2026-10-18',
+      linkOriginal: 'https://www.anthropic.com/news/public-benefit-fund',
+      area: 'IA & Modelos',
+      interesse: 'ambos',
+      prioridade: 'explorar',
+      tipo: 'notícia',
+      tags: ['Anthropic', 'benefício público', 'equity', 'governança', 'mercado de trabalho'],
+    },
+    {
+      id: 'mat-707',
+      tituloPt: 'Gemini Nano Banana 2.1 chega à disponibilidade geral com proporções panorâmicas até 4K',
+      tituloOriginal: 'Gemini Nano Banana 2.1 generally available (GA)',
+      resumoCurto:
+        'Desde 6 de outubro, o Gemini Nano Banana 2.1 (gemini-nano-banana-2.1) está em disponibilidade geral na Gemini API. O modelo de geração e edição de imagens mantém velocidade e custo de nível Flash, melhora renderização de texto e consistência de personagem, e gera proporções panorâmicas de 1:4 a 8:1 em 1K, 2K e 4K.',
+      analiseDetalhada:
+        'O Gemini Nano Banana 2.1 é a atualização do Nano Banana 2 (gemini-3.1-flash-image), modelo de geração e edição conversacional de imagens. O Google anuncia melhorias em qualidade visual, aderência ao prompt, consistência de personagem ao longo de vários turnos e renderização de texto, mantendo velocidade e custo de nível Flash.\n\nA novidade mais concreta são as proporções largas e panorâmicas: 1:4, 4:1, 1:8 e 8:1, nas resoluções 1K, 2K e 4K.\n\nJunto com o lançamento, o gemini-3.1-flash-image foi declarado obsoleto, ainda sem data de desligamento; a migração recomendada é para o gemini-nano-banana-2.1. As outras deprecações do mesmo changelog (Gemini 3.7 Flash, 3.5 Flash e o Deep Research de dezembro de 2025) saíram na edição de 12/10.',
+      porQueImporta:
+        'Para o sócio de front-end, as proporções panorâmicas e a melhor renderização de texto abrem uso em banners, cabeçalhos e peças em formatos fora do padrão, onde modelos de imagem costumavam falhar.\n\nPara quem já chama o gemini-3.1-flash-image, a troca do model string é o passo a planejar: ainda não há data de desligamento, mas a deprecação já está anunciada.',
+      fonte: 'Google / Gemini API',
+      data: '06/10/2026',
+      dataISO: '2026-10-06',
+      linkOriginal: 'https://ai.google.dev/gemini-api/docs/changelog',
+      area: 'IA & Modelos',
+      interesse: 'front-end',
+      prioridade: 'explorar',
+      tipo: 'changelog',
+      tags: ['Google', 'Gemini', 'Nano Banana', 'geração de imagens', 'deprecação'],
+    },
+  ],
+};
