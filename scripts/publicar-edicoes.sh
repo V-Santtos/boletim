@@ -2,11 +2,16 @@
 # Publica no Attlas as edições que ficaram fora da main.
 #
 # Procura branches `claude/*` que trazem um `src/data/edicao-AAAA-MM-DD.ts` que a main ainda
-# não tem. Cada um é mesclado na main, validado e compilado; só o que passa entra. No fim,
+# não tem. Cada um é mesclado na main e passa por scripts/pipeline-edicao.sh (dados, fotos,
+# build, visual); só o que passa entra, já com as fotos aplicadas. No fim,
 # um único push na main — e a Vercel publica a partir dela.
 #
 #   scripts/publicar-edicoes.sh                       # todos os branches claude/*, do mais novo ao mais velho
-#   scripts/publicar-edicoes.sh claude/foo claude/bar # só estes
+#   scripts/publicar-edicoes.sh claude/foo claude/bar # só estes (é o que o push faz)
+#
+# Branch nomeado (push) publica também correção de edição que já está na main — fotos, um
+# dado errado. A varredura sem nomes só leva edição nova: branch esquecido com correção
+# velha não volta a mexer no portal.
 #
 # Só conta edição dos últimos JANELA_DIAS (padrão 21): edição velha num branch esquecido,
 # ou podada de propósito por podar-edicoes.mjs, não volta ao portal.
@@ -27,7 +32,9 @@ git checkout --quiet -B "$PRINCIPAL" "$REMOTO/$PRINCIPAL"
 
 if [ "$#" -gt 0 ]; then
   branches=("$@")
+  corrige=1
 else
+  corrige=0
   # O mais novo primeiro: quando um branch recente já traz as edições de um antigo (com as
   # correções), é a versão dele que deve entrar, e o antigo passa a não ter nada de novo.
   mapfile -t branches < <(git for-each-ref --sort=-committerdate --format='%(refname:lstrip=3)' "refs/remotes/$REMOTO/claude/")
@@ -51,18 +58,27 @@ for branch in "${branches[@]}"; do
     git cat-file -e "HEAD:$arquivo" 2>/dev/null || novas+=("$arquivo")
   done < <(git diff --name-only --diff-filter=A "HEAD...$ref" -- 'src/data/edicao-*.ts')
 
-  if [ "${#novas[@]}" -eq 0 ]; then
-    echo "· $branch: nenhuma edição nova."
+  # Correções em edições que a main já tem (só no push do próprio branch).
+  alteradas=()
+  if [ "$corrige" = 1 ]; then
+    while IFS= read -r arquivo; do
+      [ -n "$arquivo" ] && git cat-file -e "HEAD:$arquivo" 2>/dev/null && ! git diff --quiet HEAD "$ref" -- "$arquivo" && alteradas+=("$arquivo")
+    done < <(git diff --name-only --diff-filter=M "HEAD...$ref" -- 'src/data/edicao-*.ts')
+  fi
+
+  if [ "${#novas[@]}" -eq 0 ] && [ "${#alteradas[@]}" -eq 0 ]; then
+    echo "· $branch: nenhuma edição nova nem correção."
     continue
   fi
 
-  echo "▶ $branch: ${novas[*]}"
+  echo "▶ $branch: novas: ${novas[*]:-—} | corrigidas: ${alteradas[*]:-—}"
+  edicoes=("${novas[@]}" "${alteradas[@]}")
   antes=$(git rev-parse HEAD)
   # A main já descobre as edições pela pasta? Então a edicoes.ts dela é a que vale.
   descoberta=0
   git show "$antes:src/data/edicoes.ts" | grep -q 'require.context' && descoberta=1
 
-  if ! git merge --no-ff --no-edit --quiet -m "Publica ${novas[*]##*/} (de $branch)" "$ref"; then
+  if ! git merge --no-ff --no-edit --quiet -m "Publica ${edicoes[*]##*/} (de $branch)" "$ref"; then
     # edicoes.ts descobre as edições pela pasta; branches antigos ainda trazem a lista manual.
     # A versão da main vale. Qualquer outro conflito é de verdade e para tudo.
     conflitos=$(git diff --name-only --diff-filter=U)
@@ -84,14 +100,21 @@ for branch in "${branches[@]}"; do
 
   git diff --quiet "$antes" HEAD -- package-lock.json || npm ci --no-audit --no-fund --loglevel=error
 
-  if ! log=$(node scripts/validar-edicoes.mjs 2>&1 && CI=false npx react-scripts build 2>&1); then
-    echo "$log" | tail -40
+  # As quatro etapas (dados, fotos, build, visual). A de fotos grava a og:image de cada
+  # matéria: a rotina que esquecer as fotos não publica edição sem elas.
+  if ! log=$(bash scripts/pipeline-edicao.sh "${edicoes[@]##*/}" 2>&1); then
+    echo "$log" | tail -60
     git reset --quiet --hard "$antes"
-    falhas+=("$branch — validação ou build falhou: $(echo "$log" | grep -m1 -E 'Failed|Error|problema|TS[0-9]+' || echo 'ver log')")
+    falhas+=("$branch — $(echo "$log" | grep -m1 '✘' || echo 'pipeline falhou, ver log')")
     continue
   fi
+  echo "$log" | grep -E '━━|✔|✘|fotos aplicadas' || true
+  if ! git diff --quiet -- src/data scripts/imagens-genericas.txt; then
+    git add src/data scripts/imagens-genericas.txt
+    git commit --quiet -m "Fotos de ${edicoes[*]##*/}"
+  fi
 
-  publicadas+=("${novas[*]##*/} (de $branch)")
+  publicadas+=("${edicoes[*]##*/} (de $branch)")
 done
 
 {
