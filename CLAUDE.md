@@ -16,7 +16,7 @@ O portal é publicado na Vercel a partir do branch `main`. **Uma edição que n�
 4. **Não edite `src/data/edicoes.ts`.** Ele descobre toda edição da pasta sozinho e ordena por data; editar a lista à mão é o que fazia duas edições conflitarem.
 5. **Não altere `App.tsx` para trocar a edição exibida.** O seletor do cabeçalho abre na edição mais recente automaticamente.
 6. `npm install && node scripts/validar-edicoes.mjs && npm run build` — a edição só fecha com dados válidos e build limpo. O workflow repete os dois e não publica se falharem.
-7. Commit e push do branch. Abra também um pull request para `main` como registro, com título `Attlas — edição de DD/MM/AAAA` e corpo listando matérias adicionadas, duplicatas agrupadas, fontes indisponíveis e itens que precisam de revisão humana. O PR fecha sozinho como mesclado quando o workflow publica.
+7. Commit e push do branch. Abra também um pull request para `main` como registro, com título `Attlas — edição de DD/MM/AAAA` e corpo listando matérias adicionadas, duplicatas agrupadas, fontes indisponíveis e itens que precisam de revisão humana. Quando o workflow publica, o GitHub fecha o PR sozinho (aparece como "closed", não "merged" — o conteúdo está na `main` do mesmo jeito).
 8. Encerre informando o link do PR e o resultado do workflow `Publicar edição do Attlas` no branch.
 
 ## Validação visual — obrigatória antes de fechar
