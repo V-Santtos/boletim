@@ -252,8 +252,6 @@ export const edicao20261026: Edicao = {
       data: '26/10/2026',
       dataISO: '2026-10-26',
       linkOriginal: 'https://ai.google.dev/gemini-api/docs/changelog',
-      imagem: 'https://ai.google.dev/static/site-assets/images/release-notes.png',
-      orientacaoImagem: 'horizontal',
       area: 'Back-end',
       interesse: 'back-end',
       prioridade: 'explorar',
