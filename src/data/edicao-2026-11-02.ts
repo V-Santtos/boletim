@@ -249,6 +249,8 @@ export const edicao20261102: Edicao = {
       data: '01/11/2026',
       dataISO: '2026-11-01',
       linkOriginal: 'https://trigger.dev/blog/security-incident-nov-2026',
+      imagem: 'https://trigger.dev/blog/generic/security-report.png',
+      orientacaoImagem: 'horizontal',
       area: 'Infra & Segurança',
       interesse: 'back-end',
       prioridade: 'explorar',
