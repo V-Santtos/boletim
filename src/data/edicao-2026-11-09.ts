@@ -150,8 +150,6 @@ export const edicao20261109: Edicao = {
       data: '06/11/2026',
       dataISO: '2026-11-06',
       linkOriginal: 'https://aistudio.google.com/docs/changelog',
-      imagem: 'https://ai.google.dev/static/site-assets/images/share-ais-513315318.png',
-      orientacaoImagem: 'horizontal',
       area: 'Ferramentas & Agents',
       interesse: 'ambos',
       prioridade: 'relevante',
